@@ -25,3 +25,6 @@ go.work.sum
 .env
 /.idea
 *.sum
+config.json
+sig.bin
+qrcode.png

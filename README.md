@@ -24,8 +24,6 @@ Iceinu是使用Go编写的分布式QQ聊天机器人，可以直接拉取进行�
 
 Iceinu可以以分布式模式进行部署，通过在启动时附加`--node`参数即可启动Iceinu的子节点模式，在子节点的配置文件中设置主节点的ip即可进行连接。
 
-还可以通过`--multi`参数进行本地多节点模式部署，实现单主机同时连接多个账号。
-
 ## 二次开发
 
 Go语言的静态特性让它非常不怎么适合传统意义上的模块化加载，所以Iceinu并没有也不会实现从外部进行的插件加载。
@@ -38,4 +36,9 @@ git clone git@github.com:Iceinu-Project/iceinu.git
 
 ## 鸣谢
 
-- [ZeroBot](https://github.com/wdvxdr1123/ZeroBot) | 基于onebot协议的Golang聊天机器人开发框架
+- [Lagrange.Core](https://github.com/LagrangeDev/Lagrange.Core) NTQQ通信协议的C#实现
+- [LagrangeGo](https://github.com/LagrangeDev/LagrangeGo) Lagrange.Core的Go实现
+- [LagrangeGo-Teamplate](https://github.com/ExquisiteCore/LagrangeGo-Template) LagrangeGo的模板示例项目
+- [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 基于 Mirai 以及 MiraiGo 的 OneBot Golang 原生实现
+- [ZeroBot](https://github.com/wdvxdr1123/ZeroBot) 基于onebot协议的Golang聊天机器人开发框架
+- [Logrus](https://github.com/sirupsen/logrus) 强大好用的Go日志库

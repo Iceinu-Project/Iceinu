@@ -1,0 +1,13 @@
+{
+  "SignServerURL": "",
+  "MusicSignServerURL": "",
+  "IgnoreSelf": true,
+  "Master": {
+    "ListenHost": "127.0.0.1",
+    "ListenPort": 23333
+  },
+  "Node": {
+    "IsNode": false,
+    "MasterURL": "ws://127.0.0.1:23333/iceinu/ws"
+  }
+}
