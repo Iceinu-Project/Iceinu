@@ -1,10 +1,20 @@
-# <img src="./static/img/icedog.png" alt="logo" style="height: 6vh; position: relative; top: 1.2vh; max-width: 100%;"> Iceinu 氷犬
+# 🧊Iceinu 氷犬
 
 ![Go Badge](https://img.shields.io/badge/Go-1.22%2B-cyan?logo=go)
 
 Iceinu是使用Go编写的分布式QQ聊天机器人，可以直接拉取进行部署，也可以作为开发框架在其基础上自行增减功能和开发插件。
 
-🚧暂时还在施工中，晚点再来探索吧~
+🚧暂时还在~~画饼~~施工中，晚点再来探索吧~
+
+## 特性
+
+- 基于Go开发,性能表现良好
+- 支持分布式部署
+- 内置客户端通信协议集成
+- 可拓展的插件系统
+- 所有插件共享统一的数据库引擎
+- 独有的**订阅**系统
+- 高度可自定义的命令解析集成
 
 ## 直接部署
 
