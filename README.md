@@ -1,4 +1,4 @@
-# <img src="./static/img/icedog.png" alt="logo" style="height: 6vh;"> 氷犬
+# <img src="./static/img/icedog.png" alt="logo" style="height: 6vh; position: relative; top: 1.2vh; max-width: 100%;"> Iceinu 氷犬
 
 ![Go Badge](https://img.shields.io/badge/Go-1.22%2B-cyan?logo=go)
 
@@ -25,3 +25,7 @@ Go语言的静态特性让它非常不怎么适合传统意义上的模块化加
 ```shell
 git clone git@github.com:Iceinu-Project/iceinu.git
 ```
+
+## 鸣谢
+
+- [ZeroBot](https://github.com/wdvxdr1123/ZeroBot) | 基于onebot协议的Golang聊天机器人开发框架
