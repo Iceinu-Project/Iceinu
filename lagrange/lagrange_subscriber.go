@@ -1,4 +1,4 @@
-package adapter
+package lagrange
 
 import (
 	"github.com/LagrangeDev/LagrangeGo/client"

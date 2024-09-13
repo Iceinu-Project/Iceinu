@@ -1,4 +1,4 @@
-package adapter
+package lagrange
 
 import (
 	"github.com/Iceinu-Project/iceinu/log"
@@ -8,13 +8,13 @@ import (
 	"os"
 )
 
-type LgrBot struct {
+type Bot struct {
 	*client.QQClient
 }
 
-var LgrClient *LgrBot
+var LgrClient *Bot
 
-func LgrInit() {
+func Init() {
 	logger := log.GetProtocolLogger()
 	appInfo := auth.AppList["linux"]["3.2.10-25765"]
 	deviceInfo := auth.NewDeviceInfo(3291183200)
@@ -33,11 +33,11 @@ func LgrInit() {
 			qqClientInstance.UseSig(sig)
 		}
 	}
-	LgrClient = &LgrBot{QQClient: qqClientInstance}
+	LgrClient = &Bot{QQClient: qqClientInstance}
 }
 
-// LgrLogin 登录
-func LgrLogin() error {
+// Login 登录
+func Login() error {
 	// 声明 err 变量并进行错误处理
 	err := LgrClient.Login("", "qrcode.png")
 	if err != nil {
@@ -47,8 +47,8 @@ func LgrLogin() error {
 	return nil
 }
 
-// LgrSaveSignature 保存sign信息
-func LgrSaveSignature() {
+// SaveSignature 保存sign信息
+func SaveSignature() {
 	data, err := LgrClient.Sig().Marshal()
 	if err != nil {
 		logrus.Errorln("生成签名文件时发生错误err:", err)

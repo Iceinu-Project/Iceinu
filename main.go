@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"github.com/Iceinu-Project/iceinu/adapter"
 	"github.com/Iceinu-Project/iceinu/config"
+	"github.com/Iceinu-Project/iceinu/handler"
+	"github.com/Iceinu-Project/iceinu/lagrange"
 	"github.com/Iceinu-Project/iceinu/log"
 	"github.com/sirupsen/logrus"
 	"os"
@@ -39,11 +40,16 @@ func main() {
 	logger.Info("当前版本: v0.0.1")
 	logger.Info("当前配置: ", conf)
 
-	adapter.Init()
-	adapter.Login()
+	lagrange.Init()
+	lagrange.Login()
 
-	defer adapter.QQClient.Release()
-	defer adapter.SaveSignature()
+	handler.BindHandler()
+
+	lagrange.SetIceinuHandler()
+	lagrange.SetAllSubscribes()
+
+	defer lagrange.LgrClient.Release()
+	defer lagrange.SaveSignature()
 
 	// 主协程关闭通道
 	mc := make(chan os.Signal, 2)

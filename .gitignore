@@ -28,3 +28,4 @@ go.work.sum
 config.json
 sig.bin
 qrcode.png
+signature.bin
