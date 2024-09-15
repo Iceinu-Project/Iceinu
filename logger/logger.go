@@ -1,4 +1,4 @@
-package log
+package logger
 
 import (
 	"fmt"
@@ -70,12 +70,62 @@ func (f *IceinuFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	return []byte(logMsg), nil
 }
 
-// GetLogger 获取日志Logger实例
-func GetLogger() *logrus.Logger {
-	return logger
+// Info 输出Info级别的日志
+func Info(args ...interface{}) {
+	logger.Info(args...)
 }
 
-// SetLoggerFormatter 设置自定义日志输出
-func SetLoggerFormatter(formatter logrus.Formatter) {
-	logger.SetFormatter(formatter)
+// Infof 格式化输出Info级别的日志
+func Infof(format string, args ...interface{}) {
+	logger.Infof(format, args...)
+}
+
+// Debug 输出Debug级别的日志
+func Debug(args ...interface{}) {
+	logger.Debug(args...)
+}
+
+// Debugf 格式化输出Debug级别的日志
+func Debugf(format string, args ...interface{}) {
+	logger.Debugf(format, args...)
+}
+
+// Warn 输出Warn级别的日志
+func Warn(args ...interface{}) {
+	logger.Warn(args...)
+}
+
+// Warnf 格式化输出Warn级别的日志
+func Warnf(format string, args ...interface{}) {
+	logger.Warnf(format, args...)
+}
+
+// Error 输出Error级别的日志
+func Error(args ...interface{}) {
+	logger.Error(args...)
+}
+
+// Errorf 格式化输出Error级别的日志
+func Errorf(format string, args ...interface{}) {
+	logger.Errorf(format, args...)
+}
+
+// Fatal 输出Fatal级别的日志
+func Fatal(args ...interface{}) {
+	logger.Fatal(args...)
+}
+
+// Fatalf 格式化输出Fatal级别的日志
+func Fatalf(format string, args ...interface{}) {
+	logger.Fatalf(format, args...)
+}
+
+// Panic 输出Panic级别的日志
+func Panic(args ...interface{}) {
+	logger.Panic(args...)
+}
+
+// Panicf 格式化输出Panic级别的日志
+func Panicf(format string, args ...interface{}) {
+	logger.Panicf(format, args...)
 }

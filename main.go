@@ -1,63 +1,25 @@
 package main
 
 import (
-	"flag"
-	"github.com/Iceinu-Project/iceinu/config"
-	"github.com/Iceinu-Project/iceinu/handler"
-	"github.com/Iceinu-Project/iceinu/lagrange"
-	"github.com/Iceinu-Project/iceinu/log"
-	"github.com/sirupsen/logrus"
-	"os"
-	"os/signal"
-	"syscall"
+	"gtihub.com/Iceinu-Project/iceinu/adapter"
+	"gtihub.com/Iceinu-Project/iceinu/adapter/lagrange"
+	"gtihub.com/Iceinu-Project/iceinu/ice"
+	"gtihub.com/Iceinu-Project/iceinu/logger"
 )
 
 func main() {
-	// 定义命令行参数
-	isNodeEnabled := flag.Bool("node", false, "启用子节点模式")
-	isDebug := flag.Bool("debug", false, "输出调试模式日志")
-	flag.Parse()
+	logger.Infof("正在启动Iceinu，请稍等...")
+	// 自定义事件总线中间件
+	ice.Bus.AddMiddleware(func(eventType string, payload interface{}) {
+		logger.Debugf("事件推送：%s", eventType)
+	})
 
-	// 初始化日志
-	logger := log.GetLogger()
+	// 初始化适配器，默认使用LagrangeGo适配器
+	var a adapter.IceAdapter
+	a = &lagrange.AdapterLagrange{}
+	a.Init()
 
-	// 检测并输出调试参数
-	if *isDebug {
-		logger.SetLevel(logrus.DebugLevel)
-		logger.Debug("*Debug模式已启用")
-		if *isNodeEnabled {
-			logger.Debug("*子节点模式已启用")
-		}
-	} else {
-		logger.SetLevel(logrus.InfoLevel)
-	}
-	// 读取配置文件
-	config.InitConfig()
-
-	conf := config.GetConfig()
-
-	logger.Info("🧊Iceinu 正在启动...")
-	logger.Info("当前版本: v0.0.1")
-	logger.Info("当前配置: ", conf)
-
-	lagrange.Init()
-	lagrange.Login()
-
-	handler.BindHandler()
-
-	lagrange.SetIceinuHandler()
-	lagrange.SetAllSubscribes()
-
-	defer lagrange.LgrClient.Release()
-	defer lagrange.SaveSignature()
-
-	// 主协程关闭通道
-	mc := make(chan os.Signal, 2)
-	signal.Notify(mc, os.Interrupt, syscall.SIGTERM)
-	for {
-		switch <-mc {
-		case os.Interrupt, syscall.SIGTERM:
-			return
-		}
+	select {
+	// 阻塞主线程
 	}
 }

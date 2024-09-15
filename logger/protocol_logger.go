@@ -1,4 +1,4 @@
-package log
+package logger
 
 import (
 	"fmt"
@@ -15,19 +15,19 @@ var dumpspath = "dump"
 const fromProtocol = "LGR | "
 
 func (p ProtocolLogger) Info(format string, arg ...any) {
-	logger.Infof(fromProtocol+format, arg...)
+	Infof(fromProtocol+format, arg...)
 }
 
 func (p ProtocolLogger) Warning(format string, arg ...any) {
-	logger.Warnf(fromProtocol+format, arg...)
+	Warnf(fromProtocol+format, arg...)
 }
 
 func (p ProtocolLogger) Debug(format string, arg ...any) {
-	logger.Debugf(fromProtocol+format, arg...)
+	Debugf(fromProtocol+format, arg...)
 }
 
 func (p ProtocolLogger) Error(format string, arg ...any) {
-	logger.Errorf(fromProtocol+format, arg...)
+	Errorf(fromProtocol+format, arg...)
 }
 
 func (p ProtocolLogger) Dump(data []byte, format string, arg ...any) {
@@ -35,12 +35,12 @@ func (p ProtocolLogger) Dump(data []byte, format string, arg ...any) {
 	if _, err := os.Stat(dumpspath); err != nil {
 		err = os.MkdirAll(dumpspath, 0o755)
 		if err != nil {
-			logger.Errorf("出现错误 %v. 详细信息转储失败", message)
+			Errorf("出现错误 %v. 详细信息转储失败", message)
 			return
 		}
 	}
 	dumpFile := path.Join(dumpspath, fmt.Sprintf("%v.dump", time.Now().Unix()))
-	logger.Errorf("出现错误 %v. 详细信息已转储至文件 %v 请连同日志提交给开发者处理", message, dumpFile)
+	Errorf("出现错误 %v. 详细信息已转储至文件 %v 请连同日志提交给开发者处理", message, dumpFile)
 	_ = os.WriteFile(dumpFile, data, 0o644)
 }
 

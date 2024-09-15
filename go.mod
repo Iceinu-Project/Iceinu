@@ -1,10 +1,10 @@
-module github.com/Iceinu-Project/iceinu
+module gtihub.com/Iceinu-Project/iceinu
 
-go 1.23.1
+go 1.22
 
 require (
 	github.com/KyokuKong/gradients v0.0.0-20240910005044-45c73fcaed90
-	github.com/LagrangeDev/LagrangeGo v0.0.0-20240911052744-4d54df24ff43
+	github.com/LagrangeDev/LagrangeGo v0.0.0-20240914013831-60efc5a57666
 	github.com/sirupsen/logrus v1.9.3
 )
 
