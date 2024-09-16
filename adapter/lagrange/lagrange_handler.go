@@ -20,8 +20,9 @@ func SetAllHandler() {
 			SelfId:    strconv.Itoa(int(client.Uin)),
 			Timestamp: time.Unix(int64(event.Time), 0),
 			Message: &resource.Message{
-				Id:      strconv.Itoa(int(event.InternalId)),
-				Content: IElementsToSatoriMsg(event.Elements),
+				Id:              strconv.Itoa(int(event.InternalId)),
+				Content:         event.ToString(),
+				MessageElements: ConvertIceElement(event.Elements),
 			},
 			Operator: &resource.User{
 				Id:       strconv.Itoa(int(event.Sender.Uin)),
@@ -60,8 +61,9 @@ func SetAllHandler() {
 				Avatar: "",
 			},
 			Message: &resource.Message{
-				Id:      strconv.Itoa(int(event.InternalId)),
-				Content: IElementsToSatoriMsg(event.Elements),
+				Id:              strconv.Itoa(int(event.InternalId)),
+				Content:         event.ToString(),
+				MessageElements: ConvertIceElement(event.Elements),
 			},
 			Operator: &resource.User{
 				Id:       strconv.Itoa(int(event.Sender.Uin)),
