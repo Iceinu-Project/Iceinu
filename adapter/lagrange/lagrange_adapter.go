@@ -5,10 +5,11 @@ import (
 	"github.com/LagrangeDev/LagrangeGo/client/auth"
 	"github.com/sirupsen/logrus"
 	"gtihub.com/Iceinu-Project/iceinu/adapter"
-	"gtihub.com/Iceinu-Project/iceinu/event"
 	"gtihub.com/Iceinu-Project/iceinu/ice"
 	"gtihub.com/Iceinu-Project/iceinu/logger"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -37,7 +38,7 @@ func (lgr *AdapterLagrange) Init() {
 	logger.Infof("正在初始化Lagrange适配器，适配器当前版本: %s", lgr.GetMeta().Version)
 
 	// 发送一个适配器初始化事件
-	ice.Bus.Publish("AdapterInitEvent", event.AdapterInitEvent{
+	ice.Bus.Publish("AdapterInitEvent", ice.AdapterInitEvent{
 		Timestamp:   time.Time{},
 		AdapterMeta: lgr.GetMeta(),
 	})
@@ -73,7 +74,18 @@ func (lgr *AdapterLagrange) Init() {
 	}
 
 	// 设置事件订阅器，将LagrangeGo的事件转换并发送到iceinu的事件总线上
+	SetAllHandler()
 	SetAllSubscribes()
+
+	// 主协程关闭通道
+	mc := make(chan os.Signal, 2)
+	signal.Notify(mc, os.Interrupt, syscall.SIGTERM)
+	for {
+		switch <-mc {
+		case os.Interrupt, syscall.SIGTERM:
+			return
+		}
+	}
 }
 
 // Login 登录
@@ -85,7 +97,7 @@ func Login() error {
 		return err
 	}
 	// 推送登录事件
-	ice.Bus.Publish("AdapterLoginEvent", event.AdapterInitEvent{
+	ice.Bus.Publish("AdapterLoginEvent", ice.AdapterInitEvent{
 		Timestamp: time.Time{},
 	})
 	return nil

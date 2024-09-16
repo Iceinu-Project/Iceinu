@@ -1,4 +1,4 @@
-package event
+package ice
 
 import (
 	"gtihub.com/Iceinu-Project/iceinu/adapter"
