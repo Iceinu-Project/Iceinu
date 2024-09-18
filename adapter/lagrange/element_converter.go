@@ -66,10 +66,30 @@ func ConvertIceElement(e []message.IMessageElement) *[]elements.IceinuMessageEle
 				Timestamp: time.Unix(int64(ele.Time), 0),
 				Elements:  ConvertIceElement(ele.Elements),
 			})
+		case message.Forward:
+			ele := ele.(*message.ForwardMessage)
+			IceinuElements = append(IceinuElements, &elements.MessageElement{
+				Forward:  true,
+				Elements: UnzipNodes(ele.Nodes),
+			})
 
 		default:
 			IceinuElements = append(IceinuElements, &elements.UnsupportedElement{Type: strconv.Itoa(int(ele.Type()))})
 		}
+	}
+	return &IceinuElements
+}
+
+func UnzipNodes(n []*message.ForwardNode) *[]elements.IceinuMessageElement {
+	var IceinuElements []elements.IceinuMessageElement
+	for _, node := range n {
+		IceinuElements = append(IceinuElements, &elements.NodeElement{
+			GroupId:    node.GroupId,
+			SenderId:   node.SenderId,
+			SenderName: node.SenderName,
+			Time:       node.Time,
+			Message:    ConvertIceElement(node.Message),
+		})
 	}
 	return &IceinuElements
 }

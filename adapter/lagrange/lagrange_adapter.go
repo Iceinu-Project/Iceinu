@@ -46,8 +46,8 @@ func (lgr *AdapterLagrange) Init() {
 	// 创建LagrangeGo的客户端实例
 	plogger := logger.GetProtocolLogger()
 	appInfo := auth.AppList["linux"]["3.2.10-25765"]
-	deviceInfo := auth.NewDeviceInfo(3291183200)
-	qqClientInstance := client.NewClient(3291183200, appInfo, "https://sign.lagrangecore.org/api/sign/25765")
+	deviceInfo := auth.NewDeviceInfo(0)
+	qqClientInstance := client.NewClient(0, appInfo, "https://sign.lagrangecore.org/api/sign/25765")
 	qqClientInstance.SetLogger(plogger)
 	qqClientInstance.UseDevice(deviceInfo)
 

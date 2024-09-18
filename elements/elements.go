@@ -478,14 +478,23 @@ func (q *QuoteElement) ToSatori() string {
 	if !q.Timestamp.IsZero() {
 		attributes = append(attributes, fmt.Sprintf("time=\"%s\"", q.Timestamp.Format(time.RFC3339)))
 	}
+
+	// 构建开始标签，包含属性
+	openingTag := fmt.Sprintf("<quote %s>", strings.Join(attributes, " "))
+
+	// 将子元素转换为 Satori 字符串
+	var elements []string
 	if q.Elements != nil {
-		var elements []string
 		for _, element := range *q.Elements {
 			elements = append(elements, element.ToSatori())
 		}
-		attributes = append(attributes, strings.Join(elements, ""))
 	}
-	return fmt.Sprintf("<quote %s/>", strings.Join(attributes, " "))
+
+	// 定义结束标签
+	closingTag := "</quote>"
+
+	// 组合所有部分
+	return openingTag + strings.Join(elements, "") + closingTag
 }
 
 // UnsupportedElement 未支持的消息元素
@@ -499,4 +508,89 @@ func (u *UnsupportedElement) GetType() string {
 
 func (u *UnsupportedElement) ToSatori() string {
 	return fmt.Sprintf("<!-- Unsupported element type: %s -->", u.Type)
+}
+
+// MessageElement 消息封装元素
+type MessageElement struct {
+	Id        string
+	Forward   bool
+	NtForward bool
+	Elements  *[]IceinuMessageElement
+}
+
+func (m *MessageElement) GetType() string {
+	return "message"
+}
+
+func (m *MessageElement) ToSatori() string {
+	var attributes []string
+	if m.Id != "" {
+		attributes = append(attributes, fmt.Sprintf("id=\"%s\"", m.Id))
+	}
+	if m.Forward {
+		attributes = append(attributes, "forward=\"true\"")
+	}
+
+	// 构建开始标签，包含属性
+	openingTag := fmt.Sprintf("<message %s>", strings.Join(attributes, " "))
+
+	// 将子元素转换为 Satori 字符串
+	var elements []string
+	if m.Elements != nil {
+		for _, element := range *m.Elements {
+			elements = append(elements, element.ToSatori())
+		}
+	}
+
+	// 定义结束标签
+	closingTag := "</message>"
+
+	// 组合所有部分
+	return openingTag + strings.Join(elements, "") + closingTag
+}
+
+// NodeElement *消息节点封装元素，用于QQ平台的节点合并转发消息
+type NodeElement struct {
+	GroupId    int64
+	SenderId   int64
+	SenderName string
+	Time       int32
+	Message    *[]IceinuMessageElement
+}
+
+func (n *NodeElement) GetType() string {
+	return "node"
+}
+
+func (n *NodeElement) ToSatori() string {
+	var attributes []string
+	if n.GroupId != 0 {
+		attributes = append(attributes, fmt.Sprintf("group=\"%d\"", n.GroupId))
+	}
+	if n.SenderId != 0 {
+		attributes = append(attributes, fmt.Sprintf("sender_id=\"%d\"", n.SenderId))
+	}
+	if n.SenderName != "" {
+		attributes = append(attributes, fmt.Sprintf("sender_name=\"%s\"", n.SenderName))
+	}
+	if n.Time != 0 {
+		attributes = append(attributes, fmt.Sprintf("time=\"%d\"", n.Time))
+	}
+
+	// 构建开始标签，包含属性
+	openingTag := fmt.Sprintf("<node %s>", strings.Join(attributes, " "))
+
+	// 将消息内容转换为 Satori 字符串
+	var messages []string
+	if n.Message != nil {
+		for _, element := range *n.Message {
+			messages = append(messages, element.ToSatori())
+		}
+	}
+
+	// 定义结束标签
+	closingTag := "</node>"
+
+	// 组合所有部分
+	return openingTag + strings.Join(messages, "") + closingTag
 }

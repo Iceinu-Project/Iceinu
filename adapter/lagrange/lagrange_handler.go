@@ -3,6 +3,7 @@ package lagrange
 import (
 	"github.com/LagrangeDev/LagrangeGo/client"
 	"github.com/LagrangeDev/LagrangeGo/message"
+	"gtihub.com/Iceinu-Project/iceinu/logger"
 	"gtihub.com/Iceinu-Project/iceinu/resource"
 	"gtihub.com/Iceinu-Project/iceinu/utils"
 	"strconv"
@@ -39,7 +40,7 @@ func SetAllHandler() {
 				IsBot:    false,
 			},
 		}
-		utils.JPrint(e)
+		logger.Infof("[私聊][%s]%s：%s", e.Operator.Id, e.Operator.Nickname, utils.SatorizeIceElements(e.Message.MessageElements))
 		ice.Bus.Publish("PrivateMessageEvent", &e)
 	})
 	Manager.RegisterGroupMessageHandler(func(client *client.QQClient, event *message.GroupMessage) {
@@ -73,7 +74,7 @@ func SetAllHandler() {
 				IsBot:    false,
 			},
 		}
-		utils.JPrint(e)
+		logger.Infof("[群聊][来自群%s][%s]%s：%s", e.Guild.Id, e.Operator.Id, e.Operator.Nickname, utils.SatorizeIceElements(e.Message.MessageElements))
 		ice.Bus.Publish("GroupMessageEvent", &e)
 	})
 }
