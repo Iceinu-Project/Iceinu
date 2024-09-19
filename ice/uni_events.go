@@ -18,11 +18,11 @@ type PlatformEvent struct {
 	Argv      *resource.Argv        // 交互指令
 	Button    *resource.Button      // 交互按钮
 	Channel   *resource.Channel     // 事件所属的频道
-	Guild     *resource.Guild       // 事件所属的群组
+	Group     *resource.Group       // 事件所属的群组
 	Login     *resource.Login       // 事件的登录信息
-	Member    *resource.GuildMember // 事件的目标成员
+	Member    *resource.GroupMember // 事件的目标成员
 	Message   *resource.Message     // 事件的消息
 	Operator  *resource.User        // 事件的操作者
-	Role      *resource.GuildRole   // 事件的目标角色
+	Role      *resource.GroupRole   // 事件的目标角色
 	User      *resource.User        // 事件的目标用户
 }

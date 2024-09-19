@@ -2,20 +2,20 @@ package resource
 
 import "time"
 
-type Guild struct {
+type Group struct {
 	Id     string // 群组ID
 	Name   string // 群组名称
 	Avatar string // 群组头像
 }
 
-type GuildMember struct {
+type GroupMember struct {
 	User     *User
 	Nickname string
 	Avatar   string
 	JoinedAt time.Time
 }
 
-type GuildRole struct {
+type GroupRole struct {
 	Id   string
 	Name string
 }

@@ -1,15 +1,16 @@
 package lagrange
 
 import (
-	"github.com/Iceinu-Project/iceinu/logger"
-	"github.com/Iceinu-Project/iceinu/resource"
-	"github.com/Iceinu-Project/iceinu/utils"
-	"github.com/LagrangeDev/LagrangeGo/client"
-	"github.com/LagrangeDev/LagrangeGo/message"
 	"strconv"
 	"time"
 
+	"github.com/LagrangeDev/LagrangeGo/client"
+	"github.com/LagrangeDev/LagrangeGo/message"
+
 	"github.com/Iceinu-Project/iceinu/ice"
+	"github.com/Iceinu-Project/iceinu/logger"
+	"github.com/Iceinu-Project/iceinu/resource"
+	"github.com/Iceinu-Project/iceinu/utils"
 )
 
 func SetAllHandler() {
@@ -56,7 +57,7 @@ func SetAllHandler() {
 				Name:     event.GroupName,
 				ParentId: "",
 			},
-			Guild: &resource.Guild{
+			Group: &resource.Group{
 				Id:     strconv.Itoa(int(event.GroupUin)),
 				Name:   event.GroupName,
 				Avatar: "",
@@ -74,7 +75,7 @@ func SetAllHandler() {
 				IsBot:    false,
 			},
 		}
-		logger.Infof("[群聊][来自群%s][%s]%s：%s", e.Guild.Id, e.Operator.Id, e.Operator.Nickname, utils.SatorizeIceElements(e.Message.MessageElements))
+		logger.Infof("[群聊][来自群%s][%s]%s：%s", e.Group.Id, e.Operator.Id, e.Operator.Nickname, utils.SatorizeIceElements(e.Message.MessageElements))
 		ice.Bus.Publish("GroupMessageEvent", &e)
 	})
 }

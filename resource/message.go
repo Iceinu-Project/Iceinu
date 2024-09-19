@@ -9,8 +9,8 @@ type Message struct {
 	Id              string
 	Content         string
 	Channel         *Channel
-	Guild           *Guild
-	Member          *GuildMember
+	Group           *Group
+	Member          *GroupMember
 	User            *User
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
