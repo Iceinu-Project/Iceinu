@@ -25,21 +25,21 @@ jobs:
       run: go mod tidy
 
     - name: Build for Linux x64
-      working-directory: ./bot
+      working-directory: ./
       run: GOOS=linux GOARCH=amd64 go build -o build/go-iceinu-linux-amd64-${{ github.sha }} .
 
     - name: Build for Windows x64
-      working-directory: ./bot
+      working-directory: ./
       run: GOOS=windows GOARCH=amd64 go build -o build/go-iceinu-windows-amd64-${{ github.sha }}.exe .
 
     - name: Upload Linux binary
       uses: actions/upload-artifact@v3
       with:
         name: go-iceinu-linux-amd64-${{ github.sha }}
-        path: ./bot/build/go-iceinu-linux-amd64-${{ github.sha }}
+        path: ./build/go-iceinu-linux-amd64-${{ github.sha }}
 
     - name: Upload Windows binary
       uses: actions/upload-artifact@v3
       with:
         name: go-iceinu-windows-amd64-${{ github.sha }}
-        path: ./bot/build/go-iceinu-windows-amd64-${{ github.sha }}.exe
+        path: ./build/go-iceinu-windows-amd64-${{ github.sha }}.exe
