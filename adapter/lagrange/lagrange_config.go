@@ -1,6 +1,6 @@
 package lagrange
 
-import "gtihub.com/Iceinu-Project/iceinu/config"
+import "github.com/Iceinu-Project/iceinu/config"
 
 type AdapterLagrangeConfig struct {
 	Account      int    `toml:"account"`

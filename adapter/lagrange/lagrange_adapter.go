@@ -1,13 +1,13 @@
 package lagrange
 
 import (
+	"github.com/Iceinu-Project/iceinu/adapter"
+	"github.com/Iceinu-Project/iceinu/config"
+	"github.com/Iceinu-Project/iceinu/ice"
+	"github.com/Iceinu-Project/iceinu/logger"
 	"github.com/LagrangeDev/LagrangeGo/client"
 	"github.com/LagrangeDev/LagrangeGo/client/auth"
 	"github.com/sirupsen/logrus"
-	"gtihub.com/Iceinu-Project/iceinu/adapter"
-	"gtihub.com/Iceinu-Project/iceinu/config"
-	"gtihub.com/Iceinu-Project/iceinu/ice"
-	"gtihub.com/Iceinu-Project/iceinu/logger"
 	"os"
 	"os/signal"
 	"syscall"

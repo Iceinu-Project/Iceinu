@@ -2,6 +2,7 @@
 
 ![Go Badge](https://img.shields.io/badge/Go-1.22%2B-cyan?logo=go)
 ![workflow](https://github.com/Iceinu-Project/iceinu/actions/workflows/go.yml/badge.svg)
+![QQGroup Badge](https://img.shields.io/badge/QQ群-970801565-blue?)
 
 氷犬Iceinu 是一个多用途的Go语言聊天机器人框架(主要为NTQQ设计)，可以将其作为开发套件来进行二次开发，亦或者作为库按需引入来快速编写自己的聊天机器人（暂时没有实现）。
 

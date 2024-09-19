@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
-	"gtihub.com/Iceinu-Project/iceinu/adapter"
-	"gtihub.com/Iceinu-Project/iceinu/adapter/lagrange"
-	"gtihub.com/Iceinu-Project/iceinu/config"
-	"gtihub.com/Iceinu-Project/iceinu/ice"
-	"gtihub.com/Iceinu-Project/iceinu/logger"
+	"github.com/Iceinu-Project/iceinu/adapter"
+	"github.com/Iceinu-Project/iceinu/adapter/lagrange"
+	"github.com/Iceinu-Project/iceinu/config"
+	"github.com/Iceinu-Project/iceinu/ice"
+	"github.com/Iceinu-Project/iceinu/logger"
 )
 
 func main() {

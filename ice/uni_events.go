@@ -3,7 +3,7 @@ package ice
 import (
 	"time"
 
-	"gtihub.com/Iceinu-Project/iceinu/resource"
+	"github.com/Iceinu-Project/iceinu/resource"
 )
 
 // PlatformEvent Iceinu的基础平台事件结构体，基本参考了Satori的设计，用于实现跨平台的统一事件格式

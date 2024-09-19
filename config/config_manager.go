@@ -1,8 +1,8 @@
 package config
 
 import (
+	"github.com/Iceinu-Project/iceinu/logger"
 	"github.com/pelletier/go-toml"
-	"gtihub.com/Iceinu-Project/iceinu/logger"
 	"os"
 	"path/filepath"
 	"reflect"

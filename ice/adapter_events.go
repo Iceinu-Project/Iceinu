@@ -1,7 +1,7 @@
 package ice
 
 import (
-	"gtihub.com/Iceinu-Project/iceinu/adapter"
+	"github.com/Iceinu-Project/iceinu/adapter"
 	"time"
 )
 

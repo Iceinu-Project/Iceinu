@@ -1,7 +1,7 @@
 package resource
 
 import (
-	"gtihub.com/Iceinu-Project/iceinu/elements"
+	"github.com/Iceinu-Project/iceinu/elements"
 	"time"
 )
 

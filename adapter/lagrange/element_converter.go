@@ -1,9 +1,10 @@
 package lagrange
 
 import (
+	"github.com/Iceinu-Project/iceinu/elements"
 	"github.com/LagrangeDev/LagrangeGo/message"
-	"gtihub.com/Iceinu-Project/iceinu/elements"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -17,7 +18,22 @@ func ConvertIceElement(e []message.IMessageElement) *[]elements.IceinuMessageEle
 		// 将元素依次对应转换并传入
 		case message.Text:
 			ele := ele.(*message.TextElement)
-			IceinuElements = append(IceinuElements, &elements.TextElement{Text: ele.Content})
+			// 检测文本中是否包含换行符
+			if strings.Contains(ele.Content, "\n") {
+				// 如果包含换行符，进行拆分和处理
+				textParts := strings.Split(ele.Content, "\n")
+				for i, part := range textParts {
+					// 将每段文本添加到 IceinuElements
+					IceinuElements = append(IceinuElements, &elements.TextElement{Text: part})
+					// 如果不是最后一段文本，则插入 BrElement
+					if i < len(textParts)-1 {
+						IceinuElements = append(IceinuElements, &elements.BrElement{})
+					}
+				}
+			} else {
+				// 如果不包含换行符，直接添加文本元素
+				IceinuElements = append(IceinuElements, &elements.TextElement{Text: ele.Content})
+			}
 		case message.At:
 			ele := ele.(*message.AtElement)
 			IceinuElements = append(IceinuElements, &elements.AtElement{

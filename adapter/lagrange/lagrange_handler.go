@@ -1,15 +1,15 @@
 package lagrange
 
 import (
+	"github.com/Iceinu-Project/iceinu/logger"
+	"github.com/Iceinu-Project/iceinu/resource"
+	"github.com/Iceinu-Project/iceinu/utils"
 	"github.com/LagrangeDev/LagrangeGo/client"
 	"github.com/LagrangeDev/LagrangeGo/message"
-	"gtihub.com/Iceinu-Project/iceinu/logger"
-	"gtihub.com/Iceinu-Project/iceinu/resource"
-	"gtihub.com/Iceinu-Project/iceinu/utils"
 	"strconv"
 	"time"
 
-	"gtihub.com/Iceinu-Project/iceinu/ice"
+	"github.com/Iceinu-Project/iceinu/ice"
 )
 
 func SetAllHandler() {
