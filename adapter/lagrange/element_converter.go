@@ -60,7 +60,7 @@ func ConvertIceElement(e []message.IMessageElement) *[]elements.IceinuMessageEle
 		case message.Reply:
 			ele := ele.(*message.ReplyElement)
 			IceinuElements = append(IceinuElements, &elements.QuoteElement{
-				UserId:    strconv.Itoa(int(ele.GroupUin)),
+				UserId:    strconv.Itoa(int(ele.SenderUin)),
 				UserName:  ele.SenderUid,
 				GroupId:   strconv.Itoa(int(ele.GroupUin)),
 				Timestamp: time.Unix(int64(ele.Time), 0),

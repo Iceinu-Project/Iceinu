@@ -5,6 +5,7 @@ import (
 	"github.com/LagrangeDev/LagrangeGo/client/auth"
 	"github.com/sirupsen/logrus"
 	"gtihub.com/Iceinu-Project/iceinu/adapter"
+	"gtihub.com/Iceinu-Project/iceinu/config"
 	"gtihub.com/Iceinu-Project/iceinu/ice"
 	"gtihub.com/Iceinu-Project/iceinu/logger"
 	"os"
@@ -21,11 +22,12 @@ type Bot struct {
 }
 
 var LgrClient *Bot
+var lagrangeConfig *AdapterLagrangeConfig
 
 func (lgr *AdapterLagrange) GetMeta() *adapter.IceAdapterMeta {
 	return &adapter.IceAdapterMeta{
 		AdapterName: "Lagrange Adapter",
-		Version:     "Beta0.0.1",
+		Version:     "β0.2.1",
 		Platform:    "NTQQ",
 		Author: []string{
 			"Kyoku",
@@ -37,6 +39,11 @@ func (lgr *AdapterLagrange) GetMeta() *adapter.IceAdapterMeta {
 func (lgr *AdapterLagrange) Init() {
 	logger.Infof("正在初始化Lagrange适配器，适配器当前版本: %s", lgr.GetMeta().Version)
 
+	// 获取配置文件内容
+	cm := config.GetManager()
+	lagrangeConfig := cm.Get("lagrange.toml").(*AdapterLagrangeConfig)
+	logger.Infof("%v", lagrangeConfig.Password == "")
+
 	// 发送一个适配器初始化事件
 	ice.Bus.Publish("AdapterInitEvent", ice.AdapterInitEvent{
 		Timestamp:   time.Time{},
@@ -46,8 +53,8 @@ func (lgr *AdapterLagrange) Init() {
 	// 创建LagrangeGo的客户端实例
 	plogger := logger.GetProtocolLogger()
 	appInfo := auth.AppList["linux"]["3.2.10-25765"]
-	deviceInfo := auth.NewDeviceInfo(0)
-	qqClientInstance := client.NewClient(0, appInfo, "https://sign.lagrangecore.org/api/sign/25765")
+	deviceInfo := auth.NewDeviceInfo(lagrangeConfig.Account)
+	qqClientInstance := client.NewClient(uint32(lagrangeConfig.Account), appInfo, lagrangeConfig.SignUrl)
 	qqClientInstance.SetLogger(plogger)
 	qqClientInstance.UseDevice(deviceInfo)
 
@@ -107,13 +114,13 @@ func Login() error {
 func SaveSignature() {
 	data, err := LgrClient.Sig().Marshal()
 	if err != nil {
-		logrus.Errorln("生成签名文件时发生错误err:", err)
+		logger.Error("生成签名文件时发生错误err:", err)
 		return
 	}
 	err = os.WriteFile("signature.bin", data, 0644)
 	if err != nil {
-		logrus.Errorln("写入签名文件时发生错误 err:", err)
+		logger.Error("写入签名文件时发生错误 err:", err)
 		return
 	}
-	logrus.Infoln("签名已被写入签名文件")
+	logger.Info("签名已被写入签名文件")
 }

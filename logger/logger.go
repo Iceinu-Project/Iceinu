@@ -15,7 +15,7 @@ func init() {
 	logger = logrus.New()
 
 	// 设置日志级别为InfoLevel
-	logger.SetLevel(logrus.DebugLevel)
+	logger.SetLevel(logrus.InfoLevel)
 
 	// 设置输出格式为JSON格式
 	logger.SetFormatter(&IceinuFormatter{})
@@ -128,4 +128,14 @@ func Panic(args ...interface{}) {
 // Panicf 格式化输出Panic级别的日志
 func Panicf(format string, args ...interface{}) {
 	logger.Panicf(format, args...)
+}
+
+func SetLevel(level string) {
+	l, err := logrus.ParseLevel(level)
+	if err != nil {
+		logger.Warnf("设置日志等级失败：%v", err)
+		return
+	}
+	logger.Infof("日志等级已设置为：%s", level)
+	logger.SetLevel(l)
 }

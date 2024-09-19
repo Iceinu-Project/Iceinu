@@ -5,6 +5,7 @@ go 1.22
 require (
 	github.com/KyokuKong/gradients v0.0.0-20240910005044-45c73fcaed90
 	github.com/LagrangeDev/LagrangeGo v0.0.0-20240914013831-60efc5a57666
+	github.com/pelletier/go-toml v1.9.5
 	github.com/sirupsen/logrus v1.9.3
 )
 
