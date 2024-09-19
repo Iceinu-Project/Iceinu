@@ -1,6 +1,7 @@
 # 🧊Iceinu 氷犬
 
 ![Go Badge](https://img.shields.io/badge/Go-1.22%2B-cyan?logo=go)
+![workflow](https://github.com/Iceinu-Project/iceinu/actions/workflows/go.yml/badge.svg)
 
 氷犬Iceinu 是一个多用途的Go语言聊天机器人框架(主要为NTQQ设计)，可以将其作为开发套件来进行二次开发，亦或者作为库按需引入来快速编写自己的聊天机器人（暂时没有实现）。
 
@@ -33,7 +34,8 @@
 
 （目前仍然属于开发前期，部署了也暂时没什么用处）
 
-访问Github Action就可以获取Iceinu的自动构建二进制文件，Iceinu默认集成了`LagrangeGo`所以无需再配置onebot协议连接，第一次启动时会自动检测并生成配置文件，完成配置之后在命令行中输入回车即可开始运行。
+访问[Github Action](https://github.com/Iceinu-Project/iceinu/actions)就可以获取Iceinu的自动构建二进制文件，Iceinu默认集成了`LagrangeGo`所以无需再配置onebot
+协议连接，第一次启动时会自动检测并生成配置文件，完成配置之后在命令行中输入回车即可开始运行。
 
 你可以参照Iceinu数据库配置指南来配置Iceinu使用的PostgreSQL数据库。
 
