@@ -1,10 +1,11 @@
 # 🧊Iceinu 氷犬
 
 ![Go Badge](https://img.shields.io/badge/Go-1.22%2B-cyan?logo=go)
-![workflow](https://github.com/Iceinu-Project/iceinu/actions/workflows/go.yml/badge.svg)
-![QQGroup Badge](https://img.shields.io/badge/QQ群-970801565-blue?)
+[![workflow](https://github.com/Iceinu-Project/iceinu/actions/workflows/go.yml/badge.svg)](https://github.com/Iceinu-Project/iceinu/actions)
+[![goreportcard](https://img.shields.io/badge/go%20report-A+-brightgreen.svg?style=flat)](https://goreportcard.com/report/github.com/Iceinu-Project/iceinu)
+[![QQGroup Badge](https://img.shields.io/badge/QQ群-970801565-blue?)](https://qm.qq.com/q/93crfU39ny)
 
-氷犬Iceinu 是一个多用途的Go语言聊天机器人框架(主要为NTQQ设计)，可以将其作为开发套件来进行二次开发，亦或者作为库按需引入来快速编写自己的聊天机器人（暂时没有实现）。
+氷犬Iceinu 是一个多用途的Go语言聊天机器人框架，可以将其作为开发套件来进行二次开发，亦或者作为库按需引入来快速编写自己的聊天机器人（暂时没有实现）。
 
 🚧暂时还在~~画饼~~施工中，晚点再来探索吧~
 
@@ -19,17 +20,27 @@
 - [ ] 消息发送/统一Client设计
 - [ ] 插件系统设计和实现
 - [ ] 完善内置LagrangeGo适配器的事件接收和处理
-- [ ] 集群模式设计和实现（集群的动态总控和静态总控模式）
+- [ ] 集群模式设计和实现（集群的动态和静态总控模式）
 - [ ] 排障和性能优化
 - [ ] 自动化测试
 - [ ] 确定各项基础程序设计，编写使用文档
 
 ## 特性
 
+~~哪里是特性，完全是画饼，一半都还没实现完~~
+
 - 基于Go开发,性能表现良好
-- 基于事件驱动的消息推送机制
-- 类Satori的事件和消息系统，可以直接构建Satori标准的XHTML作为消息内容
-- 模块化设计，适配多平台，可自由开发插件
+- 基于统一事件驱动的消息推送机制
+- 以Satori作为基础实现了统一消息标准
+- 可直接发送Satori标准的XHTML消息
+- 模块化适配器设计
+- 动态/静态集群，跨平台集群
+- 完整的动态权限管理系统
+- 在插件间共享数据库连接池
+- 类Alconna的命令解析器
+- 可配置自动向指定用户/频道发送日志
+- 主动信息推送/订阅机制
+- 从HTML+CSS模板渲染图片（基于wkhtmltoimage集成，未来可能会实现）
 
 ## 直接部署
 
@@ -40,7 +51,7 @@
 
 你可以参照Iceinu数据库配置指南来配置Iceinu使用的PostgreSQL数据库。
 
-Iceinu可以以分布式模式进行部署，通过在启动时附加`--node`参数即可启动Iceinu的子节点模式，在子节点的配置文件中设置主节点的ip即可进行连接。
+Iceinu在设计上支持集群部署，且支持动态组网式集群（需要各个Bot实例之间可以相互访问）和静态总控式集群（需要一个Bot实例作为总控，这个实例本身不能下线）
 
 ## 二次开发
 
