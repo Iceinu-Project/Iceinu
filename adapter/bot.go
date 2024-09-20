@@ -43,7 +43,7 @@ type Bot interface {
 
 	GetLoginInfo() *resource.Login // 获取登录信息
 
-	SendContent(channelId string, content string) (*resource.Message, error)                                  // 发送纯文本消息
+	SendContent(groupId string, channelId string, content string) (*resource.Message, error)                  // 发送纯文本消息
 	GetMessage(channelId string, messageId string) (*resource.Message, error)                                 // （从缓存中）获取指定消息
 	RecallMessage(channelId string, messageId string) error                                                   // 撤回指定消息
 	UpdateMessage(channelId string, messageId string, content string) error                                   // 编辑指定消息
@@ -63,11 +63,9 @@ type Bot interface {
 	// Iceinu的特有API
 	// 其中一部分是对各个平台功能的扩展适配，还有一部分是其他功能的快捷方式
 
-	Send(elements []elements.IceinuMessageElement) (*resource.Message, error) // 直接发送Iceinu通用元素
-	SendSatori(satori string) (*resource.Message, error)                      // 发送Satori XHTML格式的消息字符串，自动解析成通用元素并发送
-	SendPoke(userId string) error                                             // 发送戳一戳
-	SendGroupPoke(groupId string) error                                       // 发送群组戳一戳
-	SendChannelPoke(channelId string) error                                   // 发送频道戳一戳
+	Send(groupId string, channelId string, elements []elements.IceinuMessageElement) (*resource.Message, error) // 直接发送Iceinu通用元素
+	SendSatori(groupId string, channelId string, satori string) (*resource.Message, error)                      // 发送Satori XHTML格式的消息字符串，自动解析成通用元素并发送
+	SendPoke(groupId string, channelId string, userId string) error                                             // 发送戳一戳
 
 	GetSelfUserId() string                   // 获取自己的用户ID
 	GetSelfUserName() string                 // 获取自己的用户名

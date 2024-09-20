@@ -40,7 +40,7 @@ func ConvertIceElement(e []message.IMessageElement) *[]elements.IceinuMessageEle
 				Id:   strconv.Itoa(int(ele.TargetUin)),
 				Name: ele.Display,
 				Role: "",
-				Type: "",
+				Type: strconv.Itoa(int(ele.Type())),
 			})
 		case message.Face:
 			ele := ele.(*message.FaceElement)
@@ -54,18 +54,14 @@ func ConvertIceElement(e []message.IMessageElement) *[]elements.IceinuMessageEle
 				Title:    ele.Name,
 				Duration: ele.Size,
 				Poster:   "",
-				Cache:    false,
-				Timeout:  "",
 			})
 		case message.Image:
 			ele := ele.(*message.ImageElement)
 			IceinuElements = append(IceinuElements, &elements.ImageElement{
-				Src:     ele.Url,
-				Width:   ele.Width,
-				Height:  ele.Height,
-				Title:   ele.ImageId,
-				Cache:   false,
-				Timeout: "",
+				Src:    ele.Url,
+				Width:  ele.Width,
+				Height: ele.Height,
+				Title:  ele.ImageId,
 			})
 		case message.File:
 			ele := ele.(*message.FileElement)

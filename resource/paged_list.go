@@ -1,6 +1,6 @@
 package resource
 
 type PagedList struct {
-	data []interface{}
-	next string
+	Data interface{}
+	Next string
 }

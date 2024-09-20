@@ -5,6 +5,7 @@ import (
 	"github.com/Iceinu-Project/iceinu/config"
 	"github.com/Iceinu-Project/iceinu/ice"
 	"github.com/Iceinu-Project/iceinu/logger"
+	"github.com/Iceinu-Project/iceinu/utils"
 	"github.com/LagrangeDev/LagrangeGo/client"
 	"github.com/LagrangeDev/LagrangeGo/client/auth"
 	"github.com/sirupsen/logrus"
@@ -79,6 +80,22 @@ func (lgr *AdapterLagrange) Init() {
 	if err != nil {
 		return
 	}
+
+	var bot = GetBot()
+
+	// 刷新client的缓存
+	err = LgrClient.RefreshAllGroupsInfo()
+	if err != nil {
+		return
+	}
+	err = LgrClient.RefreshFriendCache()
+	if err != nil {
+		return
+	}
+	err = LgrClient.RefreshFriendCache()
+
+	utils.JPrint(bot.GetGroupMemberList("970801565"))
+	bot.SendContent("0", "2913844577", "测试消息")
 
 	// 设置事件订阅器，将LagrangeGo的事件转换并发送到iceinu的事件总线上
 	SetAllHandler()

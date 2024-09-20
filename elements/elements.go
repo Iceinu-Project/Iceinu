@@ -1,10 +1,14 @@
 package elements
 
 import (
+	"encoding/base64"
 	"fmt"
+	"io"
 	"strings"
 	"time"
 )
+
+var DefaultThumb, _ = base64.StdEncoding.DecodeString("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")
 
 // IceinuMessageElement Iceinu的通用消息元素接口，参考了Satori的标准消息元素设计
 // https://satori.js.org/zh-CN/protocol/elements.html
@@ -30,10 +34,10 @@ func (t *TextElement) ToSatori() string {
 
 // AtElement At提及消息元素
 type AtElement struct {
-	Id   string
-	Name string
-	Role string
-	Type string
+	Id   string // 目标用户ID
+	Name string // 目标用户名称
+	Role string // 目标用户角色
+	Type string // At请求类型，0为全体成员，1为指定成员
 }
 
 func (a *AtElement) GetType() string {
@@ -59,8 +63,8 @@ func (a *AtElement) ToSatori() string {
 
 // SharpElement Sharp提及频道消息元素
 type SharpElement struct {
-	Id   string
-	Name string
+	Id   string // 目标频道ID
+	Name string // 目标频道名称
 }
 
 func (s *SharpElement) GetType() string {
@@ -80,7 +84,7 @@ func (s *SharpElement) ToSatori() string {
 
 // LinkElement A超链接消息元素
 type LinkElement struct {
-	Href string
+	Href string // 链接地址
 }
 
 func (a *LinkElement) GetType() string {
@@ -96,12 +100,21 @@ func (a *LinkElement) ToSatori() string {
 
 // ImageElement 图片消息元素
 type ImageElement struct {
-	Src     string
-	Title   string
-	Width   uint32
-	Height  uint32
-	Cache   bool
-	Timeout string
+	// 用于接收图片
+
+	ImageId string // 图片ID
+	Src     string // 图片源地址
+	Title   string // 图片标题
+	Width   uint32 // 图片宽度
+	Height  uint32 // 图片高度
+
+	EffectId int  // 图片特效ID
+	IsFlash  bool // 是否是闪图
+
+	// 用于发送图片
+	Summary string        // 图片描述
+	Path    string        // 图片路径或URL
+	Stream  io.ReadSeeker // 图片流
 }
 
 func (i *ImageElement) GetType() string {
@@ -110,6 +123,9 @@ func (i *ImageElement) GetType() string {
 
 func (i *ImageElement) ToSatori() string {
 	var attributes []string
+	if i.ImageId != "" {
+		attributes = append(attributes, fmt.Sprintf("id=\"%s\"", i.ImageId))
+	}
 	if i.Src != "" {
 		attributes = append(attributes, fmt.Sprintf("src=\"%s\"", i.Src))
 	}
@@ -122,11 +138,17 @@ func (i *ImageElement) ToSatori() string {
 	if i.Height != 0 {
 		attributes = append(attributes, fmt.Sprintf("height=\"%d\"", i.Height))
 	}
-	if i.Cache {
-		attributes = append(attributes, fmt.Sprintf("cache=\"%t\"", i.Cache))
+	if i.EffectId != 0 {
+		attributes = append(attributes, fmt.Sprintf("effect=\"%d\"", i.EffectId))
 	}
-	if i.Timeout != "" {
-		attributes = append(attributes, fmt.Sprintf("timeout=\"%s\"", i.Timeout))
+	if i.IsFlash {
+		attributes = append(attributes, fmt.Sprintf("flash=\"%t\"", i.IsFlash))
+	}
+	if i.Summary != "" {
+		attributes = append(attributes, fmt.Sprintf("summary=\"%s\"", i.Summary))
+	}
+	if i.Path != "" {
+		attributes = append(attributes, fmt.Sprintf("path=\"%s\"", i.Path))
 	}
 	return fmt.Sprintf("<img %s/>", strings.Join(attributes, " "))
 }
@@ -137,8 +159,9 @@ type AudioElement struct {
 	Title    string
 	Duration uint32
 	Poster   string
-	Cache    bool
-	Timeout  string
+	Stream   io.ReadSeeker
+	Summary  string
+	Path     string
 }
 
 func (a *AudioElement) GetType() string {
@@ -159,11 +182,11 @@ func (a *AudioElement) ToSatori() string {
 	if a.Poster != "" {
 		attributes = append(attributes, fmt.Sprintf("poster=\"%s\"", a.Poster))
 	}
-	if a.Cache {
-		attributes = append(attributes, fmt.Sprintf("cache=\"%t\"", a.Cache))
+	if a.Summary != "" {
+		attributes = append(attributes, fmt.Sprintf("summary=\"%s\"", a.Summary))
 	}
-	if a.Timeout != "" {
-		attributes = append(attributes, fmt.Sprintf("timeout=\"%s\"", a.Timeout))
+	if a.Path != "" {
+		attributes = append(attributes, fmt.Sprintf("path=\"%s\"", a.Path))
 	}
 	return fmt.Sprintf("<audio %s/>", strings.Join(attributes, " "))
 }
@@ -176,8 +199,7 @@ type VideoElement struct {
 	Height   uint32
 	Duration uint32
 	Poster   string
-	Cache    bool
-	Timeout  string
+	Path     string
 }
 
 func (v *VideoElement) GetType() string {
@@ -204,22 +226,54 @@ func (v *VideoElement) ToSatori() string {
 	if v.Poster != "" {
 		attributes = append(attributes, fmt.Sprintf("poster=\"%s\"", v.Poster))
 	}
-	if v.Cache {
-		attributes = append(attributes, fmt.Sprintf("cache=\"%t\"", v.Cache))
-	}
-	if v.Timeout != "" {
-		attributes = append(attributes, fmt.Sprintf("timeout=\"%s\"", v.Timeout))
+	if v.Path != "" {
+		attributes = append(attributes, fmt.Sprintf("path=\"%s\"", v.Path))
 	}
 	return fmt.Sprintf("<video %s/>", strings.Join(attributes, " "))
 }
 
+// ShortVideoElement 短视频消息元素
+type ShortVideoElement struct {
+	Title    string
+	Src      string
+	Duration uint32
+	Summary  string
+	Stream   io.ReadSeeker
+	Path     string
+}
+
+func (s *ShortVideoElement) GetType() string {
+	return "shortvideo"
+}
+
+func (s *ShortVideoElement) ToSatori() string {
+	var attributes []string
+	if s.Title != "" {
+		attributes = append(attributes, fmt.Sprintf("title=\"%s\"", s.Title))
+	}
+	if s.Src != "" {
+		attributes = append(attributes, fmt.Sprintf("src=\"%s\"", s.Src))
+	}
+	if s.Duration != 0 {
+		attributes = append(attributes, fmt.Sprintf("duration=\"%d\"", s.Duration))
+	}
+	if s.Summary != "" {
+		attributes = append(attributes, fmt.Sprintf("summary=\"%s\"", s.Summary))
+	}
+	if s.Path != "" {
+		attributes = append(attributes, fmt.Sprintf("path=\"%s\"", s.Path))
+	}
+	return fmt.Sprintf("<shortvideo %s/>", strings.Join(attributes, " "))
+}
+
 // FileElement 文件消息元素
 type FileElement struct {
-	Src     string
-	Title   string
-	Poster  string
-	Cache   bool
-	Timeout string
+	Src    string
+	Title  string
+	Poster string
+	Size   uint64
+	Stream io.ReadSeeker
+	Path   string
 }
 
 func (f *FileElement) GetType() string {
@@ -237,11 +291,11 @@ func (f *FileElement) ToSatori() string {
 	if f.Poster != "" {
 		attributes = append(attributes, fmt.Sprintf("poster=\"%s\"", f.Poster))
 	}
-	if f.Cache {
-		attributes = append(attributes, fmt.Sprintf("cache=\"%t\"", f.Cache))
+	if f.Size != 0 {
+		attributes = append(attributes, fmt.Sprintf("size=\"%d\"", f.Size))
 	}
-	if f.Timeout != "" {
-		attributes = append(attributes, fmt.Sprintf("timeout=\"%s\"", f.Timeout))
+	if f.Path != "" {
+		attributes = append(attributes, fmt.Sprintf("path=\"%s\"", f.Path))
 	}
 	return fmt.Sprintf("<file %s/>", strings.Join(attributes, " "))
 }

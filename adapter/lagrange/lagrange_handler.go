@@ -1,6 +1,7 @@
 package lagrange
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -15,12 +16,24 @@ import (
 
 func SetAllHandler() {
 	Manager.RegisterPrivateMessageHandler(func(client *client.QQClient, event *message.PrivateMessage) {
+		self, _ := client.FetchUserInfoUin(client.Uin)
 		e := ice.PlatformEvent{
 			EventId:   uint64(event.Id),
 			EventType: "PrivateMessageEvent",
 			Platform:  "QQNT",
 			SelfId:    strconv.Itoa(int(client.Uin)),
 			Timestamp: time.Unix(int64(event.Time), 0),
+			Group: &resource.Group{
+				Id:     "",
+				Name:   "",
+				Avatar: "",
+			},
+			Channel: &resource.Channel{
+				Id:       strconv.Itoa(int(event.Sender.Uin)),
+				Type:     1,
+				Name:     event.Sender.Uid,
+				ParentId: "",
+			},
 			Message: &resource.Message{
 				Id:              strconv.Itoa(int(event.InternalId)),
 				Content:         event.ToString(),
@@ -30,14 +43,14 @@ func SetAllHandler() {
 				Id:       strconv.Itoa(int(event.Sender.Uin)),
 				Name:     event.Sender.Uid,
 				Nickname: event.Sender.Nickname,
-				Avatar:   "",
+				Avatar:   self.Avatar,
 				IsBot:    false,
 			},
 			User: &resource.User{
 				Id:       strconv.Itoa(int(event.Target)),
 				Name:     client.GetUid(client.Uin),
 				Nickname: client.NickName(),
-				Avatar:   "",
+				Avatar:   self.Avatar,
 				IsBot:    false,
 			},
 		}
@@ -45,6 +58,9 @@ func SetAllHandler() {
 		ice.Bus.Publish("PrivateMessageEvent", &e)
 	})
 	Manager.RegisterGroupMessageHandler(func(client *client.QQClient, event *message.GroupMessage) {
+		groupinfo := client.GetCachedGroupInfo(event.GroupUin)
+		fmt.Println(groupinfo)
+		self, _ := client.FetchUserInfoUin(client.Uin)
 		e := ice.PlatformEvent{
 			EventId:   uint64(event.Id),
 			EventType: "GroupMessageEvent",
@@ -60,7 +76,7 @@ func SetAllHandler() {
 			Group: &resource.Group{
 				Id:     strconv.Itoa(int(event.GroupUin)),
 				Name:   event.GroupName,
-				Avatar: "",
+				Avatar: groupinfo.Avatar,
 			},
 			Message: &resource.Message{
 				Id:              strconv.Itoa(int(event.InternalId)),
@@ -71,7 +87,7 @@ func SetAllHandler() {
 				Id:       strconv.Itoa(int(event.Sender.Uin)),
 				Name:     event.Sender.Uid,
 				Nickname: event.Sender.Nickname,
-				Avatar:   "",
+				Avatar:   self.Avatar,
 				IsBot:    false,
 			},
 		}
