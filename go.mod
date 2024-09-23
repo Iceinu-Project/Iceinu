@@ -4,6 +4,7 @@ go 1.23.1
 
 require (
 	github.com/KyokuKong/gradients v0.0.0-20240910005044-45c73fcaed90
+	github.com/google/uuid v1.6.0
 	github.com/sirupsen/logrus v1.9.3
 )
 
