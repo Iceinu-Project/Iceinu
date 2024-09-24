@@ -210,18 +210,37 @@ func (bus *EventBus) wrapSubscribeMiddlewares(handler EventHandler) EventHandler
 	return handler
 }
 
+// UseGlobalPublishMiddleware 添加全局发布中间件
 func UseGlobalPublishMiddleware(middleware PublishMiddleware) {
 	Bus.UseGlobalPublishMiddleware(middleware)
 }
 
+// UseTypePublishMiddleware 添加指定类型发布中间件
 func UseTypePublishMiddleware(eventType uint8, middleware PublishMiddleware) {
 	Bus.UseTypePublishMiddleware(eventType, middleware)
 }
 
+// UseSummaryPublishMiddleware 添加指定摘要发布中间件
 func UseSummaryPublishMiddleware(summary string, middleware PublishMiddleware) {
 	Bus.UseSummaryPublishMiddleware(summary, middleware)
 }
 
+// UseSubscribeMiddleware 添加订阅者接收事件中间件
 func UseSubscribeMiddleware(middleware SubscribeMiddleware) {
 	Bus.UseSubscribeMiddleware(middleware)
+}
+
+// Publish 用于向事件总线发布事件的快捷方式
+func Publish(event *IceinuEvent) {
+	Bus.Publish(event)
+}
+
+// Subscribe 用于从事件总线订阅事件的快捷方式
+func Subscribe(eventType uint8, summary string, handler EventHandler) string {
+	return Bus.Subscribe(eventType, summary, handler)
+}
+
+// Unsubscribe 用于从事件总线取消订阅事件的快捷方式
+func Unsubscribe(eventType uint8, summary string, subID string) {
+	Bus.Unsubscribe(eventType, summary, subID)
 }
