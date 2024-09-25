@@ -19,6 +19,9 @@ type NodeConfig struct {
 }
 
 type DatabaseConfig struct {
+	MaxIdleConns           int    `toml:"max_idle_conns"`            // 数据库连接池最大空闲连接数
+	MaxOpenConns           int    `toml:"max_open_conns"`            // 数据库连接池最大连接数
+	ConnMaxLifetime        int    `toml:"conn_max_lifetime"`         // 数据库连接最大生命周期，单位为分钟
 	IsEnableRemoteDatabase bool   `toml:"is_enable_remote_database"` // 是否启用远程数据库
 	DatabaseType           string `toml:"database_type"`             // 数据库类型，可选值为MySQL，PostgreSQL
 	DatabaseURL            string `toml:"database_url"`              // 数据库连接地址
@@ -42,6 +45,9 @@ func IceConfigInit() {
 			MasterURL:    "",
 		},
 		Database: DatabaseConfig{
+			MaxIdleConns:           10,
+			MaxOpenConns:           100,
+			ConnMaxLifetime:        60,
 			IsEnableRemoteDatabase: false,
 			DatabaseType:           "PostgreSQL",
 			DatabaseURL:            "",

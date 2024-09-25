@@ -92,3 +92,7 @@ func SetLevel(level string) {
 func SetFormatter(formatter logrus.Formatter) {
 	logger.SetFormatter(formatter)
 }
+
+func GetLogger() *logrus.Logger {
+	return logger
+}

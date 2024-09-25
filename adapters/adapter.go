@@ -1,4 +1,4 @@
-package adpters
+package adapters
 
 // IceinuAdapter Iceinu的适配器接口，编写适配器时需要实现这个接口
 type IceinuAdapter interface {

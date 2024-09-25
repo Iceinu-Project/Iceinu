@@ -18,19 +18,19 @@ func (f *LogFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	case logrus.DebugLevel, logrus.TraceLevel:
 		levelColor = gradient.DarkGreen
 		textColor = gradient.DarkGreen
-		levelText = "DEBUG"
+		levelText = "🚧DEBUG"
 	case logrus.InfoLevel:
 		levelColor = gradient.DarkCyan
 		textColor = gradient.Reset
-		levelText = "_INFO"
+		levelText = "🧊INFO"
 	case logrus.WarnLevel:
 		levelColor = gradient.Orange
 		textColor = gradient.DarkOrange
-		levelText = "_WARN"
+		levelText = "⚠️WARN"
 	case logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel:
 		levelColor = gradient.Red
 		textColor = gradient.Red
-		levelText = "ERROR"
+		levelText = "🔴ERROR"
 	default:
 		levelColor = gradient.White
 		textColor = gradient.White

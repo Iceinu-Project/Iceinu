@@ -1,13 +1,13 @@
 package lagrange
 
 import (
-	"github.com/Iceinu-Project/Iceinu/adpters"
+	"github.com/Iceinu-Project/Iceinu/adapters"
 	"github.com/LagrangeDev/LagrangeGo/client"
 	"github.com/LagrangeDev/LagrangeGo/client/auth"
 )
 
 // InfosLagrangeAdapter LagrangeGo适配器元信息
-var InfosLagrangeAdapter = adpters.AdapterInfo{
+var InfosLagrangeAdapter = adapters.AdapterInfo{
 	Name:      "LagrangeGo适配器",
 	Version:   "1.0.0",
 	Model:     "Satori",
@@ -47,11 +47,11 @@ func (AdapterLagrangeGo) Start() error {
 	panic("implement me")
 }
 
-func (AdapterLagrangeGo) GetAdapterInfo() *adpters.AdapterInfo {
+func (AdapterLagrangeGo) GetAdapterInfo() *adapters.AdapterInfo {
 	return &InfosLagrangeAdapter
 }
 
-func (AdapterLagrangeGo) GetUserTree() *adpters.UserTree {
+func (AdapterLagrangeGo) GetUserTree() *adapters.UserTree {
 	//TODO implement me
 	panic("implement me")
 }
