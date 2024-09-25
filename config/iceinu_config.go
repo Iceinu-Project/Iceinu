@@ -1,6 +1,6 @@
 package config
 
-import "github.com/Iceinu-Project/iceinu/log"
+import "github.com/Iceinu-Project/Iceinu/log"
 
 var IceConf *IceinuConfig
 
@@ -53,6 +53,7 @@ func IceConfigInit() {
 	}
 	err := ProcessConfig(IceConf, "ice_config.toml")
 	if err != nil {
+		log.Errorf("初始化内置配置文件失败: %v", err)
 		return
 	}
 }

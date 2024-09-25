@@ -3,7 +3,7 @@ package cache
 import (
 	"bytes"
 	"encoding/gob"
-	"github.com/Iceinu-Project/iceinu/log"
+	"github.com/Iceinu-Project/Iceinu/log"
 	"github.com/coocood/freecache"
 )
 

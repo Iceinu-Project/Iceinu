@@ -1,8 +1,8 @@
 package cache
 
 import (
-	"github.com/Iceinu-Project/iceinu/config"
-	"github.com/Iceinu-Project/iceinu/log"
+	"github.com/Iceinu-Project/Iceinu/config"
+	"github.com/Iceinu-Project/Iceinu/log"
 )
 
 var IceCache *IceCacheManager

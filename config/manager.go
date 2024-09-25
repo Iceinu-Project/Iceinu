@@ -2,8 +2,10 @@ package config
 
 import (
 	"encoding/json"
-	"github.com/Iceinu-Project/iceinu/log"
+	"github.com/Iceinu-Project/Iceinu/log"
 	"os"
+	"reflect"
+	"strings"
 
 	"github.com/pelletier/go-toml"
 )
@@ -17,6 +19,34 @@ func structToMap(v interface{}) (map[string]interface{}, error) {
 	var m map[string]interface{}
 	err = json.Unmarshal(data, &m)
 	return m, err
+}
+
+// structToMapWithTags converts a struct to a map with tag keys, handling nested structs
+func structToMapWithTags(data interface{}) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
+	val := reflect.ValueOf(data).Elem()
+	typ := val.Type()
+
+	for i := 0; i < val.NumField(); i++ {
+		field := val.Field(i)
+		fieldType := typ.Field(i)
+		tag := fieldType.Tag.Get("toml")
+		if tag == "" {
+			tag = strings.ToLower(fieldType.Name)
+		}
+
+		if field.Kind() == reflect.Struct {
+			nestedMap, err := structToMapWithTags(field.Addr().Interface())
+			if err != nil {
+				return nil, err
+			}
+			result[tag] = nestedMap
+		} else {
+			result[tag] = field.Interface()
+		}
+	}
+
+	return result, nil
 }
 
 // 读取 TOML 文件到 map
@@ -90,7 +120,7 @@ func mergeMaps(defaultMap, fileMap map[string]interface{}) (map[string]interface
 
 // ProcessConfig 处理配置文件，需要传入预先配置了默认值的结构体和配置文件名
 func ProcessConfig(cfg interface{}, filename string) error {
-	defaultMap, err := structToMap(cfg)
+	defaultMap, err := structToMapWithTags(cfg)
 	if err != nil {
 		return err
 	}
@@ -131,6 +161,10 @@ func ProcessConfig(cfg interface{}, filename string) error {
 	if err != nil {
 		return err
 	}
+	// 打印读取到的 TOML 数据
+	// println("读取到的 TOML 数据:", string(data))
+
 	err = toml.Unmarshal(data, cfg)
+
 	return err
 }

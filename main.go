@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/Iceinu-Project/iceinu/config"
-	"github.com/Iceinu-Project/iceinu/log"
+	"github.com/Iceinu-Project/IceGradient"
+	"github.com/Iceinu-Project/Iceinu/config"
+	"github.com/Iceinu-Project/Iceinu/log"
 )
 
 // Iceinu的程序入口
@@ -18,4 +19,12 @@ func main() {
 	config.IceConfigInit()
 	// 设置日志级别
 	log.SetLevel(config.IceConf.LogLevel)
+	log.Debugf("调试模式已启用")
+	// 输出欢迎日志
+	log.Infof("欢迎使用🧊" + gradient.Bold +
+		gradient.GradientText("氷犬 Iceinu Bot", "#00d2ff", "#3a7bd5") + gradient.DarkGray + " | " +
+		gradient.RGBToANSI(255, 255, 255) +
+		gradient.GradientBackgroundText(" 通用的模块化 Go 聊天机器人框架 ", "#00d2ff", "#3a7bd5") +
+		gradient.Reset)
+	log.Infof("当前版本: " + gradient.Cyan + "β0.1.3")
 }

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/KyokuKong/gradients"
+	"github.com/Iceinu-Project/IceGradient"
 	"github.com/sirupsen/logrus"
 )
 
@@ -16,38 +16,38 @@ func (f *LogFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	var levelText string
 	switch entry.Level {
 	case logrus.DebugLevel, logrus.TraceLevel:
-		levelColor = gradients.DarkGreen
-		textColor = gradients.DarkGreen
+		levelColor = gradient.DarkGreen
+		textColor = gradient.DarkGreen
 		levelText = "DEBUG"
 	case logrus.InfoLevel:
-		levelColor = gradients.DarkCyan
-		textColor = gradients.White
+		levelColor = gradient.DarkCyan
+		textColor = gradient.Reset
 		levelText = "_INFO"
 	case logrus.WarnLevel:
-		levelColor = gradients.Orange
-		textColor = gradients.DarkYellow
+		levelColor = gradient.Orange
+		textColor = gradient.DarkOrange
 		levelText = "_WARN"
 	case logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel:
-		levelColor = gradients.Red
-		textColor = gradients.Red
+		levelColor = gradient.Red
+		textColor = gradient.Red
 		levelText = "ERROR"
 	default:
-		levelColor = gradients.White
-		textColor = gradients.White
+		levelColor = gradient.White
+		textColor = gradient.White
 		levelText = "UNKNOWN"
 	}
 
 	// 构建日志格式,可以按需修改
 	logMsg := fmt.Sprintf(
 		"%s• %s %s[%s%s%s] %s%s\n",
-		gradients.Gray,
+		gradient.Gray,
 		entry.Time.Format("2006-01-02 15:04:05"),
 		textColor,
 		levelColor,
 		levelText,
 		textColor,
 		entry.Message,
-		gradients.ResetColor,
+		gradient.Reset,
 	)
 
 	return []byte(logMsg), nil

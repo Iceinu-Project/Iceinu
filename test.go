@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Iceinu-Project/iceinu/ice"
+	"github.com/Iceinu-Project/Iceinu/ice"
 	"time"
 )
 
