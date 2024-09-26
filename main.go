@@ -27,7 +27,12 @@ func main() {
 		gradient.RGBToANSI(255, 255, 255) +
 		gradient.GradientBackgroundText(" 通用的模块化 Go 聊天机器人框架 ", "#00d2ff", "#3a7bd5") +
 		gradient.Reset)
-	log.Infof("当前版本: " + gradient.Cyan + "β0.1.3")
+	log.Infof("当前版本: " + gradient.Cyan + "β0.1.4")
 	// 初始化数据库连接
 	ice.InitLocalDatabase()
+	// 如果启用集群/分布式模式，则尝试和主节点建立连接
+	// 输出节点Id和集群模式
+	log.Info("当前节点模式: " + gradient.DarkGray + config.IceConf.Node.Mode)
+	log.Info("Node Id: " + gradient.DarkGray + ice.GetSelfNodeId())
+	log.Info("MasterNode Id: " + gradient.DarkGray + ice.GetMasterNodeId())
 }

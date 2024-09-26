@@ -2,6 +2,7 @@ package lagrange
 
 import (
 	"github.com/Iceinu-Project/Iceinu/ice"
+	"github.com/Iceinu-Project/Iceinu/models/satori"
 	"github.com/LagrangeDev/LagrangeGo/client"
 	"github.com/LagrangeDev/LagrangeGo/message"
 	"time"
@@ -16,7 +17,7 @@ func EventsBinder() {
 			Target:    ice.GetMasterNodeId(),
 			Timestamp: time.Now().Unix(),
 			Summary:   "",
-			Event:     nil,
+			Event:     &satori.EventSatori{},
 		})
 	})
 }

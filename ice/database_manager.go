@@ -35,9 +35,9 @@ func InitLocalDatabase() {
 	if count == 0 {
 		log.Infof("检测到数据库中没有节点数据，正在初始化节点数据...")
 		// 如果是第一次初始化，插入一个节点数据
-		NodeId = GenerateNodeId()
+		SelfNodeId = GenerateNodeId()
 		db.Create(&IceinuNodeData{
-			NodeId:       NodeId,
+			NodeId:       SelfNodeId,
 			AdapterModel: "satori",
 		})
 	} else {
@@ -45,7 +45,7 @@ func InitLocalDatabase() {
 		var nodeData IceinuNodeData
 		db.First(&nodeData)
 		// 更新全局NodeId
-		NodeId = nodeData.NodeId
+		SetSelfNodeId(nodeData.NodeId)
 	}
 	// 设置数据库连接池参数
 	sqlDB, err := db.DB()

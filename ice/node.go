@@ -1,15 +1,35 @@
 package ice
 
-import "github.com/google/uuid"
+import (
+	"github.com/Iceinu-Project/Iceinu/config"
+	"github.com/google/uuid"
+)
 
-var NodeId string
+var SelfNodeId string
+var MasterNodeId string
 
 func GetSelfNodeId() string {
-	return "0"
+	return SelfNodeId
 }
 
 func GetMasterNodeId() string {
-	return "0"
+	if !config.IceConf.Node.IsEnableNode {
+		return GetSelfNodeId()
+	}
+	if config.IceConf.Node.IsMaster {
+		return GetSelfNodeId()
+	}
+	return MasterNodeId
+}
+
+// SetMasterNodeId 设置主节点ID
+func SetMasterNodeId(masterNodeId string) {
+	MasterNodeId = masterNodeId
+}
+
+// SetSelfNodeId 设置自身节点ID
+func SetSelfNodeId(selfNodeId string) {
+	SelfNodeId = selfNodeId
 }
 
 // GenerateNodeId 生成一个新的节点ID，节点ID是一个字符串形式的UUID
