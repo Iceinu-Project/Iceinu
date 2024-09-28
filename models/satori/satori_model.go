@@ -1,7 +1,5 @@
 package satori
 
-import "time"
-
 // EventSatori 基于Satori标准设计的事件接收结构体，出于方便使用进行了部分修改和拓展
 type EventSatori struct {
 	Id        uint64       `json:"id,omitempty"`        // 事件ID
@@ -40,10 +38,10 @@ type Group struct {
 
 // GroupMember 群组成员结构体
 type GroupMember struct {
-	User     *User     `json:"user,omitempty"`
-	Nickname string    `json:"nickname,omitempty"`
-	Avatar   string    `json:"avatar,omitempty"`
-	JoinedAt time.Time `json:"joinedAt"`
+	User     *User  `json:"user,omitempty"`
+	Nickname string `json:"nickname,omitempty"`
+	Avatar   string `json:"avatar,omitempty"`
+	JoinedAt int64  `json:"joinedAt"`
 }
 
 // GroupRole 群组角色结构体
@@ -82,8 +80,8 @@ type Message struct {
 	Group           *Group           `json:"group,omitempty"`
 	Member          *GroupMember     `json:"member,omitempty"`
 	User            *User            `json:"user,omitempty"`
-	CreatedAt       time.Time        `json:"createdAt"`
-	UpdatedAt       time.Time        `json:"updatedAt"`
+	CreatedAt       int64            `json:"createdAt"`
+	UpdatedAt       int64            `json:"updatedAt"`
 	MessageElements *[]ElementSatori `json:"messageElements,omitempty"`
 }
 

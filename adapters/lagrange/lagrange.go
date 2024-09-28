@@ -2,11 +2,15 @@ package lagrange
 
 import (
 	"github.com/Iceinu-Project/Iceinu/adapters"
+	"github.com/Iceinu-Project/Iceinu/cache"
+	"github.com/Iceinu-Project/Iceinu/ice"
 	"github.com/Iceinu-Project/Iceinu/log"
 	"github.com/LagrangeDev/LagrangeGo/client"
 	"github.com/LagrangeDev/LagrangeGo/client/auth"
-	"github.com/sirupsen/logrus"
 	"os"
+	"os/signal"
+	"strconv"
+	"syscall"
 )
 
 // InfosLagrangeAdapter LagrangeGo适配器元信息
@@ -24,12 +28,18 @@ var InfosLagrangeAdapter = adapters.AdapterInfo{
 // Client LagrangeGo客户端实例
 var Client *client.QQClient
 
+// Cache 消息缓存
+var Cache *cache.IceCacheManager
+
 // AdapterLagrangeGo LagrangeGo适配器
 type AdapterLagrangeGo struct{}
 
-func (AdapterLagrangeGo) Init() error {
+func (a *AdapterLagrangeGo) Init() error {
 	// 读取配置文件
 	AdapterConfigInit()
+	// 初始化消息缓存
+	log.Debug("正在初始化LagrangeGo的消息缓存...")
+	Cache = cache.NewIceCacheManager(AdapterLagrangeConf.CacheSize, AdapterLagrangeConf.CacheExpire)
 	// 日志输出
 	appInfo := auth.AppList["linux"]["3.2.10-25765"]
 	deviceInfo := auth.NewDeviceInfo(AdapterLagrangeConf.Lagrange.Account)
@@ -40,11 +50,11 @@ func (AdapterLagrangeGo) Init() error {
 	// 尝试读取签名文件
 	data, err := os.ReadFile("signature.bin")
 	if err != nil {
-		logrus.Warnln("读取签名文件时发生错误:", err)
+		log.Warn("读取签名文件时发生错误:", err)
 	} else {
 		sig, err := auth.UnmarshalSigInfo(data, true)
 		if err != nil {
-			logrus.Warnln("加载签名文件时发生错误:", err)
+			log.Warn("加载签名文件时发生错误:", err)
 		} else {
 			qqClientInstance.UseSig(sig)
 		}
@@ -54,45 +64,45 @@ func (AdapterLagrangeGo) Init() error {
 	return nil
 }
 
-func (AdapterLagrangeGo) SubscribeEvents() error {
-	EventsBinder()
+func (a *AdapterLagrangeGo) SubscribeEvents() error {
+	BindEvents()
 	return nil
 }
 
-func (AdapterLagrangeGo) Start() error {
+func (a *AdapterLagrangeGo) Start() error {
 	// 在函数结束时释放Client并尝试保存签名
 	defer Client.Release()
 	defer SaveSignature()
+	// 事件订阅
+	err := a.SubscribeEvents()
+	if err != nil {
+		return err
+	}
+	SetAllSubscribes()
 	// 登录
-	err := Login()
+	err = Login()
 	if err != nil {
 		return err
 	}
-	// 尝试刷新client的所有缓存
-	err = Client.RefreshFriendCache()
-	if err != nil {
-		return err
+	// 推送适配器连接事件
+	ice.MakeAdapterConnectEvent(InfosLagrangeAdapter.Name, InfosLagrangeAdapter.Model, strconv.Itoa(int(Client.Uin)), Client.NickName())
+
+	// 主协程关闭通道
+	mc := make(chan os.Signal, 2)
+	signal.Notify(mc, os.Interrupt, syscall.SIGTERM)
+	for {
+		switch <-mc {
+		case os.Interrupt, syscall.SIGTERM:
+			return nil
+		}
 	}
-	err = Client.RefreshAllGroupsInfo()
-	if err != nil {
-		return err
-	}
-	err = Client.RefreshAllGroupMembersCache()
-	if err != nil {
-		return err
-	}
-	err = Client.RefreshAllRkeyInfoCache()
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func (AdapterLagrangeGo) GetAdapterInfo() *adapters.AdapterInfo {
+func (a *AdapterLagrangeGo) GetAdapterInfo() *adapters.AdapterInfo {
 	return &InfosLagrangeAdapter
 }
 
-func (AdapterLagrangeGo) GetUserTree() *adapters.UserTree {
+func (a *AdapterLagrangeGo) GetUserTree() *adapters.UserTree {
 	//TODO implement me
 	panic("implement me")
 }
@@ -121,4 +131,8 @@ func SaveSignature() {
 		return
 	}
 	log.Info("签名已被写入签名文件")
+}
+
+func GetAdapter() adapters.IceinuAdapter {
+	return &AdapterLagrangeGo{}
 }

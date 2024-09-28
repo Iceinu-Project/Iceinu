@@ -16,7 +16,7 @@ func (f *LogFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	var levelText string
 	switch entry.Level {
 	case logrus.DebugLevel, logrus.TraceLevel:
-		levelColor = gradient.DarkGreen
+		levelColor = gradient.LightGreen
 		textColor = gradient.DarkGreen
 		levelText = "🚧DEBUG"
 	case logrus.InfoLevel:

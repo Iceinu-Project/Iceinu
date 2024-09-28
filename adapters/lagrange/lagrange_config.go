@@ -9,8 +9,8 @@ var AdapterLagrangeConf *AdapterConfig
 
 // AdapterConfig 适配器配置
 type AdapterConfig struct {
-	CacheSize   int       `toml:"message_cache_size"`   // 消息缓存大小
-	CacheExpire int       `toml:"message_cache_expire"` // 消息缓存过期时间
+	CacheSize   uint32    `toml:"message_cache_size"`   // 消息缓存大小
+	CacheExpire uint32    `toml:"message_cache_expire"` // 消息缓存过期时间
 	Lagrange    LgrConfig `toml:"lagrange"`
 }
 

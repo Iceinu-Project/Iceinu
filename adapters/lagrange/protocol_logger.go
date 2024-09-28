@@ -2,6 +2,7 @@ package lagrange
 
 import (
 	"fmt"
+	gradient "github.com/Iceinu-Project/IceGradient"
 	"github.com/Iceinu-Project/Iceinu/log"
 	"os"
 	"path"
@@ -13,7 +14,7 @@ type ProtocolLogger struct{}
 
 var dumpspath = "dump"
 
-const fromProtocol = "LGR | "
+const fromProtocol = "LGR | " + gradient.DarkGray
 
 func (p ProtocolLogger) Info(format string, arg ...any) {
 	log.Infof(fromProtocol+format, arg...)
