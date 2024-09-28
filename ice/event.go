@@ -36,6 +36,8 @@ import "github.com/Iceinu-Project/Iceinu/adapters"
 // 12：节点失活事件（子节点到主节点）
 //
 // 13：节点重新激活事件（子节点到主节点）
+//
+// 14：数据回调事件，用于节点间的数据传输
 type IceinuEvent struct {
 	Type      uint8       `json:"type"`
 	From      string      `json:"from"`      // 消息事件来源节点ID
@@ -79,16 +81,18 @@ type NodeUserPushEvent struct {
 
 // NodeRequestDataEvent 6：节点请求数据事件（子节点到主节点）结构体
 type NodeRequestDataEvent struct {
-	DataType string `json:"data_type"` // 请求的数据类型
-	Key      string `json:"key"`       // 请求的数据键
-	Query    string `json:"query"`     // 请求的查询内容
+	RequestSerial int32  `json:"request_serial"` // 请求序列号，用于标识请求防止接受错误
+	DataType      string `json:"data_type"`      // 请求的数据类型
+	Key           string `json:"key"`            // 请求的数据键
+	Query         string `json:"query"`          // 请求的查询内容
 }
 
 // RequestNodeDataEvent 7：节点请求数据事件（主节点到子节点）结构体
 type RequestNodeDataEvent struct {
-	DataType string `json:"data_type"` // 请求的数据类型
-	Key      string `json:"key"`       // 请求的数据键
-	Query    string `json:"query"`     // 请求的查询内容
+	RequestSerial int32  `json:"request_serial"` // 请求序列号，用于标识请求防止接受错误
+	DataType      string `json:"data_type"`      // 请求的数据类型
+	Key           string `json:"key"`            // 请求的数据键
+	Query         string `json:"query"`          // 请求的查询内容
 }
 
 // AdapterConnectEvent 8：适配器连接事件结构体
@@ -112,4 +116,12 @@ type NodeDeactiveEvent struct {
 // NodeReactiveEvent 13：节点重新激活事件（子节点到主节点）结构体
 type NodeReactiveEvent struct {
 	OK bool `json:"ok"`
+}
+
+// DataCallbackEvent 14：数据回调事件，用于节点间的数据传输结构体
+type DataCallbackEvent struct {
+	OK            bool        `json:"ok"`             // 回调是否成功
+	DataType      string      `json:"data_type"`      // 数据类型
+	Data          interface{} `json:"data"`           // 回调的数据
+	RequestSerial int32       `json:"request_serial"` // 请求序列号，用于标识请求防止接受错误
 }
