@@ -144,5 +144,11 @@ func BindEvents() {
 				},
 			},
 		})
+		// 将LagrangeGo的消息存入消息缓存
+		err := Cache.Set(strconv.Itoa(int(event.InternalId)), event)
+		if err != nil {
+			return
+		}
 	})
+
 }
