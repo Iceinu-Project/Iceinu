@@ -30,3 +30,4 @@ sig.bin
 qrcode.png
 signature.bin
 *.toml
+*.db

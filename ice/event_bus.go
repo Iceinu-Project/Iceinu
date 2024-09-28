@@ -1,90 +1,246 @@
 package ice
 
-import "sync"
+import (
+	"github.com/google/uuid"
+	"sync"
+)
 
-// iceinu的事件总线实现，启动后生成全局共享的Bus实例
-// 一般情况下事件的推送和订阅由适配器和框架完成，但是也可以自己直接调用Bus实例的方法来绕过已有的事件封装（不推荐）
-
-func init() {
-	// 创建事件总线
-	Bus = CreateBus()
-}
-
-// Bus 全局事件总线实例
 var Bus *EventBus
 
-// Middleware 中间件结构体，可以通过实现中间件来对事件的发布过程进行一些处理
-type Middleware func(eventType string, payload interface{})
-
-// Event 在事件总线中传递的事件结构体
-type Event struct {
-	EventType string
-	Payload   interface{}
+// 初始化事件总线
+func init() {
+	Bus = NewEventBus()
 }
 
-// EventChan 事件总线中的事件通道
-type EventChan chan Event
+// EventHandler 事件处理函数类型
+type EventHandler func(event *IceinuEvent)
 
-// EventBus 事件总线结构体
+// PublishMiddleware 发布中间件类型
+type PublishMiddleware func(event *IceinuEvent, next func(event *IceinuEvent))
+
+// SubscribeMiddleware 订阅中间件类型
+type SubscribeMiddleware func(event *IceinuEvent, next func(event *IceinuEvent))
+
+// 订阅结构体，包含订阅 ID 和处理函数
+type subscription struct {
+	id      string
+	handler EventHandler
+}
+
+// EventBus 事件总线结构
 type EventBus struct {
-	subscribers map[string][]EventChan
-	lock        sync.RWMutex
-	middlewares []Middleware
+	subscribers          map[uint8]map[string][]subscription // 按类型和摘要存储订阅者
+	globalPublishMWs     []PublishMiddleware                 // 全局发布中间件
+	typePublishMWs       map[uint8][]PublishMiddleware       // 指定类型发布中间件
+	summaryPublishMWs    map[string][]PublishMiddleware      // 指定摘要发布中间件
+	subscribeMiddlewares []SubscribeMiddleware               // 订阅者接收事件中间件
+	lock                 sync.RWMutex
 }
 
-// CreateBus 创建事件总线，这个函数一般不需要单独调用，iceinu会在运行时自动创建事件总线
-func CreateBus() *EventBus {
-	newBus := &EventBus{
-		subscribers: make(map[string][]EventChan),
+// NewEventBus 创建新的事件总线
+func NewEventBus() *EventBus {
+	return &EventBus{
+		subscribers:       make(map[uint8]map[string][]subscription),
+		typePublishMWs:    make(map[uint8][]PublishMiddleware),
+		summaryPublishMWs: make(map[string][]PublishMiddleware),
 	}
-	return newBus
 }
 
-// Subscribe 订阅指定类型的事件
-func (bus *EventBus) Subscribe(eventType string, ch EventChan) {
-	bus.lock.Lock()
-	defer bus.lock.Unlock()
-	bus.subscribers[eventType] = append(bus.subscribers[eventType], ch)
+// 生成唯一的订阅 ID
+func generateSubscriberID() string {
+	return uuid.New().String()
 }
 
-// Unsubscribe 取消订阅指定类型的事件
-func (bus *EventBus) Unsubscribe(eventType string, ch EventChan) {
+// Subscribe 订阅事件，返回订阅 ID
+func (bus *EventBus) Subscribe(eventType uint8, summary string, handler EventHandler) string {
 	bus.lock.Lock()
 	defer bus.lock.Unlock()
-	subscribers := bus.subscribers[eventType]
-	for i, subscriber := range subscribers {
-		if subscriber == ch {
-			bus.subscribers[eventType] = append(subscribers[:i], subscribers[i+1:]...)
+
+	if bus.subscribers[eventType] == nil {
+		bus.subscribers[eventType] = make(map[string][]subscription)
+	}
+
+	subID := generateSubscriberID()
+	sub := subscription{
+		id:      subID,
+		handler: handler,
+	}
+
+	bus.subscribers[eventType][summary] = append(bus.subscribers[eventType][summary], sub)
+
+	return subID
+}
+
+// Unsubscribe 取消订阅，使用订阅 ID
+func (bus *EventBus) Unsubscribe(eventType uint8, summary string, subID string) {
+	bus.lock.Lock()
+	defer bus.lock.Unlock()
+
+	subs := bus.subscribers[eventType][summary]
+	for i, sub := range subs {
+		if sub.id == subID {
+			bus.subscribers[eventType][summary] = append(subs[:i], subs[i+1:]...)
 			break
 		}
 	}
 }
 
-// Publish 推送事件到事件总线
-func (bus *EventBus) Publish(eventType string, payload interface{}) {
-	// 调用所有中间件
-	for _, mw := range bus.middlewares {
-		mw(eventType, payload)
-	}
-
-	// 持有锁
+// GetSubscribers 获取订阅者列表，返回订阅 ID 和处理函数
+func (bus *EventBus) GetSubscribers(eventType uint8, summary string) []subscription {
 	bus.lock.RLock()
-	subscribers, found := bus.subscribers[eventType]
-	bus.lock.RUnlock()
+	defer bus.lock.RUnlock()
 
-	// 进入事件处理
-	if found {
-		event := Event{EventType: eventType, Payload: payload}
-		// 把每个订阅的事件丢给协程处理避免阻塞
-		for _, ch := range subscribers {
-			go func(ch EventChan) {
-				ch <- event
-			}(ch)
-		}
-	}
+	return bus.subscribers[eventType][summary]
 }
 
-// AddMiddleware 向事件总线中添加自定义的中间件
-func (bus *EventBus) AddMiddleware(mw Middleware) {
-	bus.middlewares = append(bus.middlewares, mw)
+// UseGlobalPublishMiddleware 添加全局发布中间件
+func (bus *EventBus) UseGlobalPublishMiddleware(middleware PublishMiddleware) {
+	bus.lock.Lock()
+	defer bus.lock.Unlock()
+
+	bus.globalPublishMWs = append(bus.globalPublishMWs, middleware)
+}
+
+// UseTypePublishMiddleware 添加指定类型发布中间件
+func (bus *EventBus) UseTypePublishMiddleware(eventType uint8, middleware PublishMiddleware) {
+	bus.lock.Lock()
+	defer bus.lock.Unlock()
+
+	bus.typePublishMWs[eventType] = append(bus.typePublishMWs[eventType], middleware)
+}
+
+// UseSummaryPublishMiddleware 添加指定摘要发布中间件
+func (bus *EventBus) UseSummaryPublishMiddleware(summary string, middleware PublishMiddleware) {
+	bus.lock.Lock()
+	defer bus.lock.Unlock()
+
+	bus.summaryPublishMWs[summary] = append(bus.summaryPublishMWs[summary], middleware)
+}
+
+// UseSubscribeMiddleware 添加订阅者接收事件中间件
+func (bus *EventBus) UseSubscribeMiddleware(middleware SubscribeMiddleware) {
+	bus.lock.Lock()
+	defer bus.lock.Unlock()
+
+	bus.subscribeMiddlewares = append(bus.subscribeMiddlewares, middleware)
+}
+
+// Publish 发布事件
+func (bus *EventBus) Publish(event *IceinuEvent) {
+	// 最终的发布函数
+	finalPublish := func(event *IceinuEvent) {
+		bus.lock.RLock()
+		handlers := bus.collectHandlers(event)
+		bus.lock.RUnlock()
+
+		for _, handler := range handlers {
+			wrappedHandler := bus.wrapSubscribeMiddlewares(handler)
+			go wrappedHandler(event)
+		}
+	}
+
+	// 包装发布中间件
+	wrappedPublish := bus.wrapPublishMiddlewares(event, finalPublish)
+
+	// 异步执行发布函数
+	go wrappedPublish(event)
+}
+
+// 收集订阅者的处理函数
+func (bus *EventBus) collectHandlers(event *IceinuEvent) []EventHandler {
+	var handlers []EventHandler
+
+	// 收集按类型订阅的处理函数
+	if summaries, ok := bus.subscribers[event.Type]; ok {
+		// 收集按摘要订阅的处理函数
+		if subs, ok := summaries[event.Summary]; ok {
+			for _, sub := range subs {
+				handlers = append(handlers, sub.handler)
+			}
+		}
+	}
+
+	return handlers
+}
+
+// 包装发布中间件
+func (bus *EventBus) wrapPublishMiddlewares(event *IceinuEvent, finalPublish func(event *IceinuEvent)) func(event *IceinuEvent) {
+	bus.lock.RLock()
+	var middlewares []PublishMiddleware
+
+	// 添加全局发布中间件
+	middlewares = append(middlewares, bus.globalPublishMWs...)
+
+	// 添加指定类型的发布中间件
+	if mw, ok := bus.typePublishMWs[event.Type]; ok {
+		middlewares = append(middlewares, mw...)
+	}
+
+	// 添加指定摘要的发布中间件
+	if mw, ok := bus.summaryPublishMWs[event.Summary]; ok {
+		middlewares = append(middlewares, mw...)
+	}
+	bus.lock.RUnlock()
+
+	// 按顺序应用中间件
+	for i := len(middlewares) - 1; i >= 0; i-- {
+		next := finalPublish
+		mw := middlewares[i]
+		finalPublish = func(event *IceinuEvent) {
+			mw(event, next)
+		}
+	}
+	return finalPublish
+}
+
+// 包装订阅者中间件
+func (bus *EventBus) wrapSubscribeMiddlewares(handler EventHandler) EventHandler {
+	bus.lock.RLock()
+	middlewares := bus.subscribeMiddlewares
+	bus.lock.RUnlock()
+
+	// 按顺序应用中间件
+	for i := len(middlewares) - 1; i >= 0; i-- {
+		next := handler
+		mw := middlewares[i]
+		handler = func(event *IceinuEvent) {
+			mw(event, next)
+		}
+	}
+	return handler
+}
+
+// UseGlobalPublishMiddleware 添加全局发布中间件
+func UseGlobalPublishMiddleware(middleware PublishMiddleware) {
+	Bus.UseGlobalPublishMiddleware(middleware)
+}
+
+// UseTypePublishMiddleware 添加指定类型发布中间件
+func UseTypePublishMiddleware(eventType uint8, middleware PublishMiddleware) {
+	Bus.UseTypePublishMiddleware(eventType, middleware)
+}
+
+// UseSummaryPublishMiddleware 添加指定摘要发布中间件
+func UseSummaryPublishMiddleware(summary string, middleware PublishMiddleware) {
+	Bus.UseSummaryPublishMiddleware(summary, middleware)
+}
+
+// UseSubscribeMiddleware 添加订阅者接收事件中间件
+func UseSubscribeMiddleware(middleware SubscribeMiddleware) {
+	Bus.UseSubscribeMiddleware(middleware)
+}
+
+// Publish 用于向事件总线发布事件的快捷方式
+func Publish(event *IceinuEvent) {
+	Bus.Publish(event)
+}
+
+// Subscribe 用于从事件总线订阅事件的快捷方式
+func Subscribe(eventType uint8, summary string, handler EventHandler) string {
+	return Bus.Subscribe(eventType, summary, handler)
+}
+
+// Unsubscribe 用于从事件总线取消订阅事件的快捷方式
+func Unsubscribe(eventType uint8, summary string, subID string) {
+	Bus.Unsubscribe(eventType, summary, subID)
 }
