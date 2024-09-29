@@ -34,6 +34,7 @@ var Cache *cache.IceCacheManager
 // AdapterLagrangeGo LagrangeGo适配器
 type AdapterLagrangeGo struct{}
 
+// Init 初始化适配器
 func (a *AdapterLagrangeGo) Init() error {
 	// 读取配置文件
 	AdapterConfigInit()
@@ -64,11 +65,13 @@ func (a *AdapterLagrangeGo) Init() error {
 	return nil
 }
 
+// SubscribeEvents 订阅事件
 func (a *AdapterLagrangeGo) SubscribeEvents() error {
 	BindEvents()
 	return nil
 }
 
+// Start 启动适配器
 func (a *AdapterLagrangeGo) Start() error {
 	// 在函数结束时释放Client并尝试保存签名
 	defer Client.Release()
@@ -98,13 +101,63 @@ func (a *AdapterLagrangeGo) Start() error {
 	}
 }
 
+// GetAdapterInfo 获取适配器信息
 func (a *AdapterLagrangeGo) GetAdapterInfo() *adapters.AdapterInfo {
 	return &InfosLagrangeAdapter
 }
 
+// GetUserTree 获取用户树
 func (a *AdapterLagrangeGo) GetUserTree() *adapters.UserTree {
-	//TODO implement me
-	panic("implement me")
+	// 获取好友列表
+	friends := Client.GetCachedAllFriendsInfo()
+	var friendList []string
+	for friend, _ := range friends {
+		friendList = append(friendList, strconv.Itoa(int(friend)))
+	}
+	// 获取群列表
+	groups := Client.GetCachedAllGroupsInfo()
+	var groupList []string
+	for group, _ := range groups {
+		groupList = append(groupList, strconv.Itoa(int(group)))
+	}
+	// 复制群列表为频道列表
+	channelList := make([]string, len(groupList))
+	copy(channelList, groupList)
+	// 返回用户树
+	return &adapters.UserTree{
+		SelfId:   strconv.Itoa(int(Client.Uin)),
+		Platform: "NTQQ",
+		NodeId:   ice.GetSelfNodeId(),
+		Users:    friendList,
+		Groups:   groupList,
+		Channels: channelList,
+	}
+}
+
+// Refresh 刷新适配器数据
+func (a *AdapterLagrangeGo) Refresh() error {
+	// 刷新LagrangeGo的缓存
+	err := Client.RefreshFriendCache()
+	if err != nil {
+		return err
+	}
+	err = Client.RefreshAllRkeyInfoCache()
+	if err != nil {
+		return err
+	}
+	err = Client.RefreshAllGroupsInfo()
+	if err != nil {
+		return err
+	}
+	err = Client.RefreshAllGroupMembersCache()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *AdapterLagrangeGo) ClearCache() {
+	Cache.Clear()
 }
 
 // Login 登录

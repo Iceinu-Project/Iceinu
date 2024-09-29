@@ -34,7 +34,7 @@ type NewFriendRequestHandler func(client *client.QQClient, event *event.NewFrien
 type FriendRecallEventHandler func(client *client.QQClient, event *event.FriendRecall)                           // 好友消息撤回
 type RenameEventHandler func(client *client.QQClient, event *event.Rename)                                       // 好友昵称更改
 type FriendNotifyEventHandler func(client *client.QQClient, event event.INotifyEvent)                            // 好友通知
-type GroupNotifyEventHandler func(client *client.QQClient, event event.INotifyEvent)                             // 群通知
+type GroupNotifyEventHandler func(client *client.QQClient, event event.INotifyEvent)
 
 // SubscribeManager 订阅管理器实现，用于向LagrangeGo注册各类消息/事件处理函数
 type SubscribeManager struct {

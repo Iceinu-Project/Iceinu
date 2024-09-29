@@ -17,6 +17,7 @@ type EventSatori struct {
 	Operator  *User        `json:"operator,omitempty"`  // 事件的操作者
 	Role      *GroupRole   `json:"role,omitempty"`      // 事件的目标角色
 	User      *User        `json:"user,omitempty"`      // 事件的目标用户
+	Meta      *Meta        `json:"meta,omitempty"`      // 事件的元数据
 }
 
 // Channel 频道结构体
@@ -98,4 +99,14 @@ type User struct {
 	Nickname string `json:"nickname,omitempty"` // 用户昵称
 	Avatar   string `json:"avatar,omitempty"`   // 用户头像
 	IsBot    bool   `json:"isBot,omitempty"`    // 是否是机器人
+}
+
+// Meta 元数据结构体
+type Meta struct {
+	MessageId  uint32 `json:"messageId,omitempty"`
+	InternalId uint32 `json:"internalId,omitempty"`
+	ClientSeq  uint32 `json:"clientSeq,omitempty"`
+	Sequence   uint64 `json:"sequence,omitempty"`
+	Random     uint32 `json:"random,omitempty"`
+	Comment    string `json:"comment,omitempty"`
 }

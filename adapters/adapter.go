@@ -7,6 +7,8 @@ type IceinuAdapter interface {
 	Start() error                 // 启动适配器
 	GetAdapterInfo() *AdapterInfo // 获取适配器元信息
 	GetUserTree() *UserTree       // 获取完整用户树
+	Refresh() error               // 刷新适配器数据
+	ClearCache()                  // 清除适配器消息/用户缓存数据
 }
 
 // AdapterInfo 适配器元信息
@@ -33,6 +35,7 @@ type AdapterInfo struct {
 type UserTree struct {
 	SelfId   string   // 适配器自身ID
 	Platform string   // 平台
+	NodeId   string   // 节点ID
 	Users    []string // 用户列表
 	Groups   []string // 群组列表
 	Channels []string // 频道列表
